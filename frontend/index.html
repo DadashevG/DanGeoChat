@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map Chat - Stage A</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .map-section {
+            flex: 1;
+            background: white;
+            box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .info-box {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 400;
+            max-width: 220px;
+            font-size: 12px;
+        }
+
+        .chat-section {
+            width: 380px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .chat-header h1 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .chat-header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f9f9f9;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .message.user {
+            text-align: right;
+        }
+
+        .message.assistant {
+            text-align: left;
+        }
+
+        .message-content {
+            display: inline-block;
+            max-width: 85%;
+            padding: 10px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .message.user .message-content {
+            background: #667eea;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.assistant .message-content {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 4px;
+        }
+
+        /* Markdown rendering inside assistant messages */
+        .message.assistant .message-content h1,
+        .message.assistant .message-content h2,
+        .message.assistant .message-content h3 {
+            font-size: 13px;
+            font-weight: bold;
+            margin: 6px 0 3px;
+            color: #444;
+        }
+        .message.assistant .message-content p { margin: 4px 0; }
+        .message.assistant .message-content ul,
+        .message.assistant .message-content ol {
+            margin: 4px 0 4px 16px;
+            padding: 0;
+        }
+        .message.assistant .message-content li { margin: 2px 0; }
+        .message.assistant .message-content strong { font-weight: 600; }
+        .message.assistant .message-content em { font-style: italic; }
+        .message.assistant .message-content hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 6px 0;
+        }
+        .message.assistant .message-content code {
+            background: #f4f4f4;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-family: monospace;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .chat-input-section {
+            padding: 16px;
+            border-top: 1px solid #e0e0e0;
+            background: white;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        #question {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 13px;
+            resize: none;
+            font-family: inherit;
+            direction: rtl;
+        }
+
+        #question:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            font-size: 12px;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-toggle {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+            white-space: nowrap;
+        }
+
+        .btn-toggle.active {
+            background: #667eea;
+            color: #fff;
+            border-color: #667eea;
+        }
+
+        .btn-toggle:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .location-display {
+            background: #f0f0f0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .location-display strong {
+            color: #333;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: pulse 1.5s ease-in-out infinite;
+            margin-left: 4px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .stage-badge {
+            display: inline-block;
+            background: #ffc107;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+
+        .toggle-note {
+            color: #777;
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+
+        .server-status {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .server-status.ok  { background: #d4edda; color: #155724; }
+        .server-status.err { background: #f8d7da; color: #721c24; }
+
+        /* ── MCP Panel ────────────────────────────────── */
+        .btn-mcp {
+            background: #20c997;
+            color: white;
+            border: none;
+            white-space: nowrap;
+        }
+        .btn-mcp:hover { background: #17a589; }
+        .btn-mcp.active {
+            background: #0e8c6a;
+            box-shadow: 0 0 0 3px rgba(32,201,151,0.35);
+        }
+
+        .mcp-panel {
+            display: none;
+            background: #f0faf6;
+            border: 1px solid #a8dfc9;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            animation: fadeIn 0.2s ease;
+        }
+        .mcp-panel.open { display: block; }
+
+        .mcp-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #0e8c6a;
+        }
+        .mcp-select-all {
+            font-size: 10px;
+            background: none;
+            border: 1px solid #a8dfc9;
+            border-radius: 4px;
+            padding: 2px 6px;
+            cursor: pointer;
+            color: #0e8c6a;
+        }
+        .mcp-select-all:hover { background: #d0f0e4; }
+
+        .mcp-tools-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px 10px;
+        }
+        .mcp-tool-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            cursor: pointer;
+            padding: 3px 0;
+        }
+        .mcp-tool-item input[type="checkbox"] { cursor: pointer; accent-color: #20c997; }
+
+        .msg-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 8px;
+            padding: 3px 8px;
+            background: #f5f0ff;
+            border: 1px solid #d8c8f8;
+            border-radius: 20px;
+            font-size: 10px;
+            color: #6b4fa8;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+        .msg-badge img { height: 11px; vertical-align: middle; }
+        .msg-badge .sep { color: #c0a8e8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Map on the right (since RTL) -->
+        <div class="chat-section">
+            <div class="chat-header">
+                <h1>Map Chat</h1>
+                <p>שלב א׳ - Baseline</p>
+            </div>
+
+            <div class="chat-messages" id="messages"></div>
+
+            <div class="chat-input-section">
+                <div id="locationDisplay" class="location-display" style="display: none;">
+                    <strong>מיקום:</strong> <span id="coordsText"></span>
+                </div>
+
+
+                <div class="server-status err" id="serverStatus">⏳ בודק חיבור לשרת...</div>
+                <div class="toggle-note" id="toggleLabel">חיפוש אינטרנט: כבוי</div>
+
+                <!-- MCP Tool Panel -->
+                <div class="mcp-panel" id="mcpPanel">
+                    <div class="mcp-panel-header">
+                        <span>🧰 כלי Geospatial — Google + Wikipedia</span>
+                        <button class="mcp-select-all" onclick="toggleAllTools()">בחר הכל</button>
+                    </div>
+                    <div class="mcp-tools-grid">
+                        <label class="mcp-tool-item">
+                            <input type="checkbox" value="google" onchange="updateMcpState()">
+                            🗺️ Google APIs
+                        </label>
+                        <label class="mcp-tool-item">
+                            <input type="checkbox" value="get_wikipedia_context" onchange="updateMcpState()">
+                            📖 Wikipedia
+                        </label>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <button class="btn btn-mcp" onclick="toggleMcpPanel()" id="mcpBtn">
+                        🧰 MCP
+                    </button>
+                    <button class="btn btn-toggle" onclick="toggleWebSearch()" id="webToggleBtn">
+                        אינטרנט: OFF
+                    </button>
+                </div>
+
+                <button class="btn btn-primary" onclick="askQuestion()" id="sendBtn">
+                    מה יש כאן?
+                </button>
+
+                <div class="stage-badge" id="stageBadge">
+                    ⚠️ שלב א׳: LLM בלבד
+                </div>
+            </div>
+        </div>
+
+        <!-- Map on the left -->
+        <div class="map-section">
+            <div id="map"></div>
+            <div class="info-box">
+                <strong>לחץ על המפה</strong><br/>
+                בחר נקודה להתחיל
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const API_BASE = "http://localhost:8010";
+        let selectedLocation = null;
+        let map = null;
+        let marker = null;
+        let useMockData = true;
+        let useWebSearch = false;
+        let useMcpMode = false;
+
+        const GOOGLE_TOOLS = ['reverse_geocode', 'get_area_info', 'get_nearby_places', 'get_distance', 'search_places'];
+
+        function getEnabledTools() {
+            const tools = [];
+            document.querySelectorAll('#mcpPanel input[type="checkbox"]:checked').forEach(cb => {
+                if (cb.value === 'google') tools.push(...GOOGLE_TOOLS);
+                else tools.push(cb.value);
+            });
+            return tools;
+        }
+
+        function updateMcpState() {
+            useMcpMode = getEnabledTools().length > 0;
+            document.getElementById('mcpBtn').classList.toggle('active', useMcpMode);
+            updateToggleUI();
+        }
+
+        function toggleMcpPanel() {
+            document.getElementById('mcpPanel').classList.toggle('open');
+        }
+
+        function toggleAllTools() {
+            const boxes = document.querySelectorAll('#mcpPanel input[type="checkbox"]');
+            const allChecked = Array.from(boxes).every(cb => cb.checked);
+            boxes.forEach(cb => { cb.checked = !allChecked; });
+            updateMcpState();
+        }
+
+        function updateToggleUI() {
+            const toggleBtn = document.getElementById('webToggleBtn');
+            toggleBtn.disabled = false;
+            toggleBtn.textContent = useWebSearch ? 'אינטרנט: ON' : 'אינטרנט: OFF';
+            toggleBtn.classList.toggle('active', useWebSearch);
+
+            if (useMcpMode && useWebSearch) {
+                const parts = Array.from(document.querySelectorAll('#mcpPanel input[type="checkbox"]:checked'))
+                    .map(cb => cb.value === 'google' ? 'Google' : 'Wikipedia');
+                document.getElementById('toggleLabel').textContent = `🧰 MCP: ${parts.join(' + ')} + 🌐 Web`;
+                document.getElementById('stageBadge').textContent = '🧰 MCP + 🌐 Web';
+            } else if (useMcpMode) {
+                const parts = Array.from(document.querySelectorAll('#mcpPanel input[type="checkbox"]:checked'))
+                    .map(cb => cb.value === 'google' ? 'Google' : 'Wikipedia');
+                document.getElementById('toggleLabel').textContent = `🧰 MCP: ${parts.join(' + ')}`;
+                document.getElementById('stageBadge').textContent = '🧰 שלב ב׳: Geospatial MCP';
+            } else if (useWebSearch) {
+                document.getElementById('toggleLabel').textContent = 'חיפוש אינטרנט: פעיל';
+                document.getElementById('stageBadge').textContent = '🌐 מחובר לאינטרנט';
+            } else {
+                document.getElementById('toggleLabel').textContent = 'חיפוש אינטרנט: כבוי';
+                document.getElementById('stageBadge').textContent = '⚠️ שלב א׳: LLM בלבד';
+            }
+        }
+
+        function toggleWebSearch() {
+            useWebSearch = !useWebSearch;
+            updateToggleUI();
+        }
+
+        // Mock data for testing
+        const mockAnswers = {
+            "תל אביב": "תל אביב היא עיר גדולה עם רשת תחבורה ציבורית מפותחת. יש קווי אוטובוס, רכבת קלה, ותחנות משותפות רבות. זה אזור עירוני מרכזי.",
+            "פתח תקווה": "פתח תקווה היא עיר בגודל בינוני ברמת הגן. יש לה קישוריות לתל אביב וערים סביבות דרך אוטובוסים ורכבת קלה.",
+            "ברירת מחדל": "זו שאלה על אזור בישראל. בדרך כלל אזורים עירוניים יש יותר תחבורה ציבורית מאזורים כפריים. בלי מידע מקומי ספציפי, קשה לתת תשובה מדויקת."
+        };
+
+        // Initialize map
+        function initMap() {
+            map = L.map('map', {
+                center: [32.08, 34.78],
+                zoom: 9
+            });
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+
+            map.on('click', function(e) {
+                selectedLocation = {
+                    lat: e.latlng.lat,
+                    lon: e.latlng.lng
+                };
+
+                updateMarker();
+                displayCoordinates();
+            });
+        }
+
+        function updateMarker() {
+            if (marker) map.removeLayer(marker);
+            marker = L.marker([selectedLocation.lat, selectedLocation.lon])
+                .addTo(map)
+                .bindPopup(`
+                    <strong>בחרת נקודה</strong><br/>
+                    Lat: ${selectedLocation.lat.toFixed(4)}<br/>
+                    Lon: ${selectedLocation.lon.toFixed(4)}
+                `)
+                .openPopup();
+        }
+
+        function displayCoordinates() {
+            document.getElementById('locationDisplay').style.display = 'block';
+            document.getElementById('coordsText').textContent = 
+                `(${selectedLocation.lat.toFixed(4)}, ${selectedLocation.lon.toFixed(4)})`;
+        }
+
+        async function askQuestion() {
+            if (!selectedLocation) {
+                alert('בחר נקודה על המפה קודם');
+                return;
+            }
+
+            const question = 'מה יש כאן?';
+
+            addMessage(question, 'user');
+            document.getElementById('sendBtn').disabled = true;
+
+            // Show loading message
+            const loadingMessage = addMessage('מחשב תשובה...', 'assistant', true);
+
+            // MCP calls can take longer (multiple API round-trips + Wikipedia)
+            const timeoutMs = useMcpMode ? 90000 : 20000;
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+            try {
+                const enabledTools = useMcpMode ? getEnabledTools() : [];
+                const scenarioType = useMcpMode ? 'mcp'
+                    : (useWebSearch ? 'web_grounded' : 'baseline');
+
+                const response = await fetch(`${API_BASE}/api/v1/ask`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    signal: controller.signal,
+                    body: JSON.stringify({
+                        lat: selectedLocation.lat,
+                        lon: selectedLocation.lon,
+                        question: question,
+                        scenario_type: scenarioType,
+                        enabled_tools: enabledTools,
+                        use_web_search: useWebSearch,
+                    })
+                });
+                clearTimeout(timeoutId);
+                removeLoadingMessage(loadingMessage);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const claudeLogo = `<img src="https://cdn.simpleicons.org/anthropic/6b4fa8" alt="Claude">`;
+                    const badgeParts = [`${claudeLogo} Claude`];
+                    if (data.model_used?.includes('+web_search')) {
+                        badgeParts.push('🌐 Web');
+                    } else if (data.scenario_type === 'web_grounded') {
+                        badgeParts.push('🌐 Web ⚠️');
+                    }
+                    if (data.model_used?.includes('+mcp')) {
+                        const used = data.tools_used ? JSON.parse(data.tools_used) : [];
+                        if (used.some(t => GOOGLE_TOOLS.includes(t))) badgeParts.push('🗺️ Google API');
+                        if (used.includes('get_wikipedia_context')) badgeParts.push('📖 Wikipedia');
+                    }
+                    const badgeHtml = `<div><span class="msg-badge">${badgeParts.join('<span class="sep"> · </span>')}</span></div>`;
+                    addMessage(data.answer, 'assistant', false, badgeHtml);
+                } else {
+                    addMessage(`שגיאה: ${response.status}`, 'assistant');
+                }
+            } catch (error) {
+                clearTimeout(timeoutId);
+                removeLoadingMessage(loadingMessage);
+                if (error.name === 'AbortError') {
+                    addMessage('הבקשה התעכבה יותר מדי זמן. נסה שוב.', 'assistant');
+                } else if (error.message === 'Failed to fetch' || error.message.includes('fetch')) {
+                    addMessage('❌ השרת לא זמין. ודא שהוא פועל על פורט 8010 ונסה שוב.', 'assistant');
+                    checkServerStatus();
+                } else {
+                    addMessage(`שגיאה: ${error.message}`, 'assistant');
+                }
+            } finally {
+                document.getElementById('sendBtn').disabled = false;
+            }
+        }
+
+        function removeLoadingMessage(messageEl) {
+            if (messageEl && messageEl.parentNode) {
+                messageEl.remove();
+            }
+        }
+
+        function addMessage(text, role, isLoading = false, badgeHtml = '') {
+            const messagesDiv = document.getElementById('messages');
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${role}${isLoading ? ' loading' : ''}`;
+            const html = (role === 'assistant' && !isLoading && typeof marked !== 'undefined')
+                ? marked.parse(text)
+                : text.replace(/\n/g, '<br>');
+            messageEl.innerHTML = `
+                <div class="message-content">${html}${badgeHtml}</div>
+                <div class="message-time">${new Date().toLocaleTimeString('he-IL')}</div>
+            `;
+            messagesDiv.appendChild(messageEl);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            return messageEl;
+        }
+
+
+        async function checkServerStatus() {
+            const el = document.getElementById('serverStatus');
+            try {
+                const r = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(4000) });
+                if (r.ok) {
+                    el.textContent = '🟢 שרת פועל על פורט 8010';
+                    el.className = 'server-status ok';
+                } else {
+                    throw new Error('bad status');
+                }
+            } catch {
+                el.textContent = '🔴 שרת לא זמין — הפעל Ctrl+Shift+B ב-VSCode';
+                el.className = 'server-status err';
+            }
+        }
+
+        // Initialize when page loads
+        window.onload = function() {
+            initMap();
+            checkServerStatus();
+            setInterval(checkServerStatus, 10000);
+            addMessage('שלום! 👋 בחר נקודה על המפה, ואז שאל שאלה.', 'assistant');
+            addMessage('זה שלב א׳ - Baseline LLM ללא grounding מרחבי.', 'assistant');
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Map-Chat (Backend + Frontend)",
+            "type": "node",
+            "request": "launch",
+            "preLaunchTask": "Start Map-Chat",
+            "program": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        }
+    ]
+}

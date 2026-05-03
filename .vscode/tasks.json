@@ -1,0 +1,64 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Backend",
+            "type": "shell",
+            "command": "${workspaceFolder}\\.conda\\python.exe",
+            "args": ["-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8010", "--reload"],
+            "options": {
+                "cwd": "${workspaceFolder}/backend"
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": { "regexp": "^$" },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "INFO:.*Uvicorn running",
+                    "endsPattern": "INFO:.*Application startup complete"
+                }
+            },
+            "presentation": {
+                "group": "map-chat",
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "Start Frontend",
+            "type": "shell",
+            "command": "${workspaceFolder}\\.conda\\python.exe",
+            "args": ["-m", "http.server", "8001"],
+            "options": {
+                "cwd": "${workspaceFolder}/frontend"
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": { "regexp": "^$" },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "Serving HTTP",
+                    "endsPattern": "Serving HTTP"
+                }
+            },
+            "presentation": {
+                "group": "map-chat",
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "Start Map-Chat",
+            "dependsOn": ["Start Backend", "Start Frontend"],
+            "dependsOrder": "parallel",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "group": "map-chat"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

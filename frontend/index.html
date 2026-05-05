@@ -414,7 +414,11 @@
                     <div class="mcp-tools-grid">
                         <label class="mcp-tool-item">
                             <input type="checkbox" value="google" onchange="updateMcpState()">
-                            🗺️ Google APIs
+                            🏙️ מקומות קרובים
+                        </label>
+                        <label class="mcp-tool-item">
+                            <input type="checkbox" value="transit" onchange="updateMcpState()">
+                            🚌 תחבורה קרובה
                         </label>
                         <label class="mcp-tool-item">
                             <input type="checkbox" value="get_wikipedia_context" onchange="updateMcpState()">
@@ -432,9 +436,14 @@
                     </button>
                 </div>
 
-                <button class="btn btn-primary" onclick="askQuestion()" id="sendBtn">
-                    מה יש כאן?
-                </button>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-primary" onclick="askQuestion('מה יש כאן?')" id="sendBtn" style="flex:1">
+                        מה יש כאן?
+                    </button>
+                    <button class="btn btn-primary" onclick="askQuestion('מה יש כאן תחבורתית?')" id="sendBtn2" style="flex:1; background:#764ba2;">
+                        מה יש כאן תחבורתית?
+                    </button>
+                </div>
 
                 <div class="stage-badge" id="stageBadge">
                     ⚠️ שלב א׳: LLM בלבד
@@ -463,11 +472,13 @@
         let useMcpMode = false;
 
         const GOOGLE_TOOLS = ['reverse_geocode', 'get_area_info', 'get_nearby_places', 'get_distance', 'search_places'];
+        const TRANSIT_TOOLS = ['get_nearby_transit'];
 
         function getEnabledTools() {
             const tools = [];
             document.querySelectorAll('#mcpPanel input[type="checkbox"]:checked').forEach(cb => {
                 if (cb.value === 'google') tools.push(...GOOGLE_TOOLS);
+                else if (cb.value === 'transit') tools.push(...TRANSIT_TOOLS);
                 else tools.push(cb.value);
             });
             return tools;
@@ -498,12 +509,12 @@
 
             if (useMcpMode && useWebSearch) {
                 const parts = Array.from(document.querySelectorAll('#mcpPanel input[type="checkbox"]:checked'))
-                    .map(cb => cb.value === 'google' ? 'Google' : 'Wikipedia');
+                    .map(cb => ({ google: '🏙️ Google', transit: '🚌 Transit', get_wikipedia_context: '📖 Wikipedia' })[cb.value] || cb.value);
                 document.getElementById('toggleLabel').textContent = `🧰 MCP: ${parts.join(' + ')} + 🌐 Web`;
                 document.getElementById('stageBadge').textContent = '🧰 MCP + 🌐 Web';
             } else if (useMcpMode) {
                 const parts = Array.from(document.querySelectorAll('#mcpPanel input[type="checkbox"]:checked'))
-                    .map(cb => cb.value === 'google' ? 'Google' : 'Wikipedia');
+                    .map(cb => ({ google: '🏙️ Google', transit: '🚌 Transit', get_wikipedia_context: '📖 Wikipedia' })[cb.value] || cb.value);
                 document.getElementById('toggleLabel').textContent = `🧰 MCP: ${parts.join(' + ')}`;
                 document.getElementById('stageBadge').textContent = '🧰 שלב ב׳: Geospatial MCP';
             } else if (useWebSearch) {
@@ -568,16 +579,15 @@
                 `(${selectedLocation.lat.toFixed(4)}, ${selectedLocation.lon.toFixed(4)})`;
         }
 
-        async function askQuestion() {
+        async function askQuestion(question = 'מה יש כאן?') {
             if (!selectedLocation) {
                 alert('בחר נקודה על המפה קודם');
                 return;
             }
 
-            const question = 'מה יש כאן?';
-
             addMessage(question, 'user');
             document.getElementById('sendBtn').disabled = true;
+            document.getElementById('sendBtn2').disabled = true;
 
             // Show loading message
             const loadingMessage = addMessage('מחשב תשובה...', 'assistant', true);
@@ -619,7 +629,8 @@
                     }
                     if (data.model_used?.includes('+mcp')) {
                         const used = data.tools_used ? JSON.parse(data.tools_used) : [];
-                        if (used.some(t => GOOGLE_TOOLS.includes(t))) badgeParts.push('🗺️ Google API');
+                        if (used.some(t => GOOGLE_TOOLS.includes(t))) badgeParts.push('🏙️ Google API');
+                        if (used.some(t => TRANSIT_TOOLS.includes(t))) badgeParts.push('🚌 Transit');
                         if (used.includes('get_wikipedia_context')) badgeParts.push('📖 Wikipedia');
                     }
                     const badgeHtml = `<div><span class="msg-badge">${badgeParts.join('<span class="sep"> · </span>')}</span></div>`;
@@ -640,6 +651,7 @@
                 }
             } finally {
                 document.getElementById('sendBtn').disabled = false;
+                document.getElementById('sendBtn2').disabled = false;
             }
         }
 

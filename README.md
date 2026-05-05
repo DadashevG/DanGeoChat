@@ -1,4 +1,4 @@
-﻿# Map Chat
+﻿# Map Chat — Stage A (Complete)
 
 אפליקציית צ'אט גיאוגרפי — לוחצים על מפה, מקבלים תיאור של המיקום מ-Claude עם נתונים אמיתיים מ-Google ו-Wikipedia.
 
@@ -9,11 +9,10 @@
 ```
 frontend/index.html               backend/app/
   Leaflet.js map      →  POST /api/v1/ask  →  routers/chat.py
-  MCP panel (Google                              ↓
-  + Wikipedia)        ←  JSON response   ←  llm_service.py
+  MCP panel           ←  JSON response   ←  llm_service.py
   Web toggle                                     ↓  (tool-use loop ×7)
-  Badge display                          geo_tools.py
-                                           ↓           ↓
+  2 question buttons                     geo_tools.py
+  Badge display                            ↓           ↓
                                       Google APIs   Wikipedia
                                       (Geocoding +   (Hebrew REST
                                        Places New)    + Search)
@@ -34,40 +33,62 @@ frontend/index.html               backend/app/
 
 ## כלי MCP
 
-| כלי | API | סטטוס |
-|-----|-----|-------|
-| `reverse_geocode` | Google Geocoding API | חובה |
-| `get_area_info` | Google Geocoding API | חובה |
-| `get_nearby_places` | Google Places API (New) — searchNearby | חובה |
-| `get_distance` | Haversine (מקומי) | חובה |
-| `search_places` | Google Places API (New) — searchText | optional — רק לחיפוש שם ספציפי |
-| `get_wikipedia_context` | Hebrew Wikipedia REST + Search | חובה |
+| כלי | API | סטטוס | תיאור |
+|-----|-----|-------|-------|
+| `reverse_geocode` | Google Geocoding API | חובה | קואורדינטות → כתובת + עיר |
+| `get_area_info` | Google Geocoding API | חובה | כתובת + משפט סיכום |
+| `get_nearby_places` | Google Places API (New) — searchNearby | חובה | מקומות כלליים (ללא תחבורה) |
+| `get_nearby_transit` | Google Places API (New) — searchNearby | חובה | תחנות תחבורה בלבד |
+| `get_distance` | Haversine (מקומי) | חובה | מרחק בקו ישר |
+| `search_places` | Google Places API (New) — searchText | optional | חיפוש מקום ספציפי בשם |
+| `get_wikipedia_context` | Hebrew Wikipedia REST + Search | חובה | סיכומי עיר, רחוב, מקומות חשובים |
 
-> `search_places` — Claude קורא לו **רק** לחיפוש מקום ספציפי בשם (שוק הכרמל, איכילוב...).
-> לשאילתות קרבה גנריות משתמשים ב-`get_nearby_places`.
+> `get_nearby_places` — מוציא תחבורה (`excludedTypes`). לשאילתות קרבה כלליות.
+> `get_nearby_transit` — רק תחנות/תחנות (`includedTypes`), רדיוס ברירת מחדל 1000m.
+> `search_places` — optional, רק לחיפוש מקום ספציפי בשם.
+
+---
+
+## כפתורי שאלה
+
+| כפתור | שאלה ל-LLM | מתי להשתמש |
+|-------|-----------|------------|
+| מה יש כאן? | `מה יש כאן?` | תיאור כללי של המיקום |
+| מה יש כאן תחבורתית? | `מה יש כאן תחבורתית?` | מידע תחבורה ציבורית |
 
 ---
 
 ## זרימת MCP
 
 ```
-[משתמש לוחץ על מפה]
+[משתמש לוחץ על מפה ובוחר שאלה]
         ↓
 POST /api/v1/ask
-  { lat, lon, scenario_type:"mcp", enabled_tools:[...], use_web_search:bool }
+  { lat, lon, question, scenario_type:"mcp", enabled_tools:[...], use_web_search:bool }
         ↓
 generate_mcp_answer() — לולאה עד 7 סיבובים
    ├─ reverse_geocode      → Google Geocoding
    ├─ get_area_info        → Google Geocoding
-   ├─ get_nearby_places    → Google Places searchNearby (radius ≤1000m)
-   ├─ get_distance         → Haversine
+   ├─ get_nearby_places    → Google Places searchNearby (excludedTypes: transit)
+   ├─ get_nearby_transit   → Google Places searchNearby (includedTypes: transit)
+   ├─ get_distance         → Haversine (מקומי)
    ├─ [search_places]      → Google Places searchText (optional)
    ├─ get_wikipedia_context→ Wikipedia parallel (ThreadPoolExecutor×6, timeout 12s)
    └─ [web_search]         → Anthropic built-in server-side (אם use_web_search=true)
         ↓
 תשובה בעברית — פסקה אחת, ללא bullets
-Badge: [💬 Claude · 🗺️ Google API · 📖 Wikipedia]
+Badge: [💬 Claude · 🏙️ Google API · 🚌 Transit · 📖 Wikipedia]
 ```
+
+---
+
+## פאנל MCP
+
+| Checkbox | כלים שנשלחים | מה מוחזר |
+|----------|-------------|---------|
+| 🏙️ מקומות קרובים | reverse_geocode, get_area_info, get_nearby_places, get_distance, search_places | מקומות כלליים |
+| 🚌 תחבורה קרובה | get_nearby_transit | תחנות בלבד |
+| 📖 Wikipedia | get_wikipedia_context | סיכומי Wikipedia |
 
 ---
 
@@ -92,14 +113,14 @@ backend/
   app/
     routers/chat.py          — POST /api/v1/ask
     services/llm_service.py  — baseline / web_grounded / mcp
-    services/geo_tools.py    — TOOL_DEFINITIONS, TOOL_FUNCTIONS
+    services/geo_tools.py    — כלי MCP: TOOL_DEFINITIONS, TOOL_FUNCTIONS
     schemas.py               — QueryCreate (lat, lon, enabled_tools, use_web_search)
     config.py                — הגדרות מ-.env
   .env                       — ANTHROPIC_API_KEY, GOOGLE_API_KEY
   logs/llm_calls.log         — לוג מלא: בקשות, כלים, טוקנים
 
 frontend/
-  index.html                 — Leaflet + chat + MCP panel + badge
+  index.html                 — Leaflet + chat + MCP panel + 2 question buttons + badge
 ```
 
 ---

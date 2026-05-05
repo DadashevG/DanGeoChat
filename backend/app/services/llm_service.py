@@ -210,7 +210,7 @@ This is a baseline response without specific geospatial data."""
             return self.generate_baseline_answer(question, lat, lon), []
 
         # ── Prompt (forces use of ALL selected tools) ────────────────────────
-        REQUIRED_GOOGLE = {"reverse_geocode", "get_area_info", "get_nearby_places", "get_distance"}
+        REQUIRED_GOOGLE = {"reverse_geocode", "get_area_info", "get_nearby_places", "get_nearby_transit", "get_distance"}
         OPTIONAL_GOOGLE = {"search_places"}
         required = [t for t in enabled_tools if t in REQUIRED_GOOGLE]
         optional = [t for t in enabled_tools if t in OPTIONAL_GOOGLE]

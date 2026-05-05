@@ -122,10 +122,13 @@ def get_area_info(lat: float, lon: float) -> dict:
     return {**geo, "summary": " — ".join(p for p in parts if p)}
 
 
-def get_nearby_places(
-    lat: float, lon: float, radius_meters: int = 500, types: list = None
-) -> list:
-    cache_key = f"nearby:{lat:.4f},{lon:.4f},{radius_meters}"
+_TRANSIT_TYPES = [
+    "transit_station", "train_station", "subway_station", "light_rail_station",
+    "bus_station", "bus_stop", "ferry_terminal", "airport", "taxi_stand",
+]
+
+
+def _nearby_request(lat: float, lon: float, radius_meters: int, body_extra: dict, cache_key: str) -> list:
     cached = _cache_get(cache_key)
     if cached is not None:
         return cached
@@ -143,9 +146,8 @@ def get_nearby_places(
                 "radius": float(min(radius_meters, 1000)),
             }
         },
+        **body_extra,
     }
-    if types:
-        body["includedTypes"] = types[:10]
 
     try:
         r = _post(
@@ -178,6 +180,22 @@ def get_nearby_places(
         return result
     except Exception as e:
         return [{"error": f"nearby search failed: {e}"}]
+
+
+def get_nearby_places(lat: float, lon: float, radius_meters: int = 500) -> list:
+    return _nearby_request(
+        lat, lon, radius_meters,
+        body_extra={"excludedTypes": _TRANSIT_TYPES},
+        cache_key=f"nearby_places:{lat:.4f},{lon:.4f},{radius_meters}",
+    )
+
+
+def get_nearby_transit(lat: float, lon: float, radius_meters: int = 1000) -> list:
+    return _nearby_request(
+        lat, lon, radius_meters,
+        body_extra={"includedTypes": _TRANSIT_TYPES},
+        cache_key=f"nearby_transit:{lat:.4f},{lon:.4f},{radius_meters}",
+    )
 
 
 def get_distance(
@@ -352,7 +370,10 @@ TOOL_FUNCTIONS = {
     "reverse_geocode": lambda i: reverse_geocode(i["lat"], i["lon"]),
     "get_area_info":   lambda i: get_area_info(i["lat"], i["lon"]),
     "get_nearby_places": lambda i: get_nearby_places(
-        i["lat"], i["lon"], i.get("radius_meters", 500), i.get("types")
+        i["lat"], i["lon"], i.get("radius_meters", 500)
+    ),
+    "get_nearby_transit": lambda i: get_nearby_transit(
+        i["lat"], i["lon"], i.get("radius_meters", 1000)
     ),
     "get_distance": lambda i: get_distance(
         i["from_lat"], i["from_lon"], i["to_lat"], i["to_lon"]
@@ -393,10 +414,9 @@ TOOL_DEFINITIONS = [
     {
         "name": "get_nearby_places",
         "description": (
-            "Find up to 10 nearby places using Google Places API (sorted by distance). "
-            "Optionally filter by Google place types: cafe, restaurant, bar, pharmacy, "
-            "supermarket, bank, atm, gas_station, park, train_station, subway_station, "
-            "bus_station, hospital, school, museum, synagogue, tourist_attraction."
+            "Find up to 10 nearby non-transit places using Google Places API (sorted by distance). "
+            "Returns POIs: cafes, restaurants, parks, museums, shops, hospitals, schools, etc. "
+            "Transit stops are excluded — use get_nearby_transit for those."
         ),
         "input_schema": {
             "type": "object",
@@ -404,11 +424,23 @@ TOOL_DEFINITIONS = [
                 "lat": {"type": "number"},
                 "lon": {"type": "number"},
                 "radius_meters": {"type": "integer", "description": "Max 1000m (default 500)"},
-                "types": {
-                    "type": "array",
-                    "items": {"type": "string"},
-                    "description": "Google place types to filter (optional)",
-                },
+            },
+            "required": ["lat", "lon"],
+        },
+    },
+    {
+        "name": "get_nearby_transit",
+        "description": (
+            "Find nearby public transit stops and stations using Google Places API (sorted by distance). "
+            "Returns: bus stops, train stations, subway stations, light rail, ferry terminals, airports. "
+            "Use this for transportation-related questions."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "lat": {"type": "number"},
+                "lon": {"type": "number"},
+                "radius_meters": {"type": "integer", "description": "Max 1000m (default 1000)"},
             },
             "required": ["lat", "lon"],
         },

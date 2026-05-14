@@ -1,4 +1,4 @@
-﻿# Map Chat — Stage A
+# Map Chat
 
 A geospatial chat app — click anywhere on the map, get a real-world description of the location powered by Claude with live data from Google APIs and Hebrew Wikipedia.
 
@@ -8,14 +8,16 @@ A geospatial chat app — click anywhere on the map, get a real-world descriptio
 
 ```
 frontend/index.html               backend/app/
-  Leaflet.js map      →  POST /api/v1/ask  →  routers/chat.py
-  MCP panel           ←  JSON response   ←  llm_service.py
-  Web toggle                                     ↓  (tool-use loop ×7)
-  2 question buttons                     geo_tools.py
-  Badge display                            ↓              ↓
-                                      Google APIs      Wikipedia
-                                      (Geocoding +     (Hebrew REST
-                                       Places New)      + Search)
+  Leaflet.js map      →  POST /api/v1/ask       →  routers/chat.py
+  MCP panel           ←  JSON response          ←  llm_service.py
+  Web toggle                                          ↓  (tool-use loop ×7)
+  2 question buttons                          geo_tools.py
+  Badge display                                ↓              ↓
+  🧪 Exam modal       →  POST /api/v1/exam/*  →  routers/exam.py
+                                                     ↓              ↓
+                                              Google APIs      Wikipedia
+                                              (Geocoding +     (Hebrew REST
+                                               Places New)      + Search)
 ```
 
 ---
@@ -92,6 +94,45 @@ Badge: [💬 Claude · 🏙️ Google API · 🚌 Transit · 📖 Wikipedia]
 
 ---
 
+## Evaluation / Test Suite (🧪)
+
+The **Exam modal** (`🧪 בדיקה` button) runs batch evaluations over a fixed set of 30 locations across Gush Dan.
+
+### Test set
+
+`exam/Places.csv` — 30 Israeli locations across Tel Aviv, Jaffa, Ramat Gan, Bnei Brak, Petah Tikva, Holon, Bat Yam, Ra'anana, Kfar Saba.
+
+### Exam flow
+
+```
+[Select places + tools + question + runs]
+        ↓
+runExam() — sequential POST /api/v1/ask per place
+        ↓
+[Optional] generateJudgingReport()
+   ├─ POST /api/v1/exam/judge-one (per place, with progress bar)
+   │     ├─ Gemini (transport judge) — factuality, coverage, specificity, distance, hallucinations
+   │     └─ OpenAI GPT-4o mini (language judge) — clarity, conciseness, relevance, usefulness, density
+   └─ POST /api/v1/exam/build-report → saves HTML report to evaluation/
+```
+
+### Scoring formula
+
+```
+FinalScore = 0.7 × TransportScore (Gemini /100) + 0.3 × LanguageScore (OpenAI /100)
+```
+
+### Exam endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/exam/places` | GET | Returns the full test-set from `exam/Places.csv` |
+| `/api/v1/exam/judge-one` | POST | Judge a single result (Gemini + OpenAI in parallel) |
+| `/api/v1/exam/build-report` | POST | Build and save HTML report from pre-computed judgments |
+| `/api/v1/exam/report` | POST | Judge all results and build report in one call |
+
+---
+
 ## Running Locally
 
 ```bash
@@ -111,16 +152,23 @@ Or in VSCode: `Ctrl+Shift+B`
 ```
 backend/
   app/
-    routers/chat.py          — POST /api/v1/ask endpoint
-    services/llm_service.py  — baseline / web_grounded / mcp logic
-    services/geo_tools.py    — all MCP tools: TOOL_DEFINITIONS, TOOL_FUNCTIONS
-    schemas.py               — QueryCreate (lat, lon, enabled_tools, use_web_search)
-    config.py                — settings loaded from .env
-  .env                       — API keys (never commit)
-  logs/llm_calls.log         — full request/tool/token log
+    routers/chat.py           — POST /api/v1/ask endpoint
+    routers/exam.py           — exam endpoints + judging logic + HTML report builder
+    services/llm_service.py   — baseline / web_grounded / mcp logic
+    services/geo_tools.py     — all MCP tools: TOOL_DEFINITIONS, TOOL_FUNCTIONS
+    schemas.py                — QueryCreate (lat, lon, enabled_tools, use_web_search)
+    config.py                 — settings loaded from .env
+  .env                        — API keys (never commit)
+  logs/llm_calls.log          — full request/tool/token log
 
 frontend/
-  index.html                 — Leaflet map + chat + MCP panel + buttons + badge
+  index.html                  — Leaflet map + chat + MCP panel + buttons + badge + exam modal
+
+exam/
+  Places.csv                  — 30 test locations (INDEX, PLACE, city, X, Y)
+
+evaluation/
+  report_*.html               — generated judging reports (auto-saved, not committed)
 ```
 
 ---
@@ -132,6 +180,10 @@ ANTHROPIC_API_KEY=...
 ANTHROPIC_MODEL=claude-haiku-4-5-20251001
 GOOGLE_API_KEY=...
 DATABASE_URL=sqlite:///./map_chat.db
+
+# Required for the exam judging report
+OPENAI_API_KEY=...
+GEMINI_API_KEY=...
 ```
 
 Enable both in Google Cloud Console:

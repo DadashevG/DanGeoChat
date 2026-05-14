@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+
+title: "A Location-Aware GIS–LLM System for Urban and Transportation Analysis"
+
+message: "If you use this software or project framework, please cite it."
+
+type: software
+
+authors:
+  - family-names: "Dadashev"
+    given-names: "Gabriel"
+    email: "dadashev@tauex.ac.il"
+
+license: MIT
+
+abstract: >
+  A location-aware GIS–LLM system for urban and transportation analysis,
+  integrating map-based spatial grounding, MCP tool calling,
+  and graph neural network representations of transportation networks
+  for improved spatial reasoning and reduced spatial hallucinations.
+
+keywords:
+  - GIS
+  - LLM
+  - Urban Computing
+  - Transportation
+  - Spatial Reasoning
+  - MCP
+  - Graph Neural Networks
+  - GeoAI
+
+repository-code: "https://github.com/DadashevG/DanGeoChat"
+
+version: "0.1.0"
+
+date-released: 2025-01-01

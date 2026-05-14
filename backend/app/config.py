@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     # Google APIs
     GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY", "")
 
+    # Evaluation judges
+    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
+    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
+
     # App
     DEBUG: bool = os.getenv("DEBUG", "True").lower() == "true"
     CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:5173", "http://localhost:8001"]

@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.config import settings
 from app.database import engine, Base
-from app.routers import chat, test_scenarios, evaluation
+from app.routers import chat, test_scenarios, evaluation, exam
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -28,6 +28,7 @@ app.add_middleware(
 app.include_router(chat.router)
 app.include_router(test_scenarios.router)
 app.include_router(evaluation.router)
+app.include_router(exam.router)
 
 @app.exception_handler(Exception)
 async def debug_exception_handler(request: Request, exc: Exception):

@@ -383,6 +383,308 @@
         }
         .msg-badge img { height: 11px; vertical-align: middle; }
         .msg-badge .sep { color: #c0a8e8; }
+
+        /* ── Exam Modal ─────────────────────────────── */
+        .btn-exam {
+            background: #fd7e14;
+            color: white;
+            border: none;
+            white-space: nowrap;
+        }
+        .btn-exam:hover { background: #e8690d; }
+
+        .exam-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 9000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .exam-modal {
+            background: white;
+            border-radius: 12px;
+            width: min(720px, 95vw);
+            height: min(85vh, 700px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            direction: rtl;
+        }
+
+        .exam-header {
+            background: linear-gradient(135deg, #fd7e14, #e05c00);
+            color: white;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .exam-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .exam-close:hover { background: rgba(255,255,255,0.35); }
+
+        .exam-body {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            gap: 10px;
+        }
+
+        .exam-places-section {
+            flex-shrink: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 8px 10px;
+        }
+
+        .exam-section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .exam-toggle-all {
+            font-size: 10px;
+            background: none;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 2px 8px;
+            cursor: pointer;
+            color: #555;
+        }
+        .exam-toggle-all:hover { background: #f0f0f0; }
+
+        .exam-places-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 3px 8px;
+        }
+
+        .exam-place-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            padding: 2px 0;
+            overflow: hidden;
+        }
+        .exam-place-item input[type="checkbox"] {
+            flex-shrink: 0;
+            cursor: pointer;
+            accent-color: #fd7e14;
+        }
+        .exam-place-item span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .exam-controls-row {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .exam-question-label {
+            font-size: 11px;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .exam-question-select {
+            font-size: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 5px 8px;
+            direction: rtl;
+            flex: 1;
+        }
+
+        .exam-progress-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .exam-progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .exam-progress-fill {
+            height: 100%;
+            background: #fd7e14;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .exam-progress-text {
+            font-size: 11px;
+            color: #666;
+            white-space: nowrap;
+            min-width: 100px;
+            text-align: left;
+        }
+
+        .exam-run-btn { white-space: nowrap; flex-shrink: 0; }
+
+        .exam-results {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .exam-result-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 12px;
+        }
+        .exam-result-card.exam-pending { border-color: #ddd; background: #fafafa; }
+        .exam-result-card.exam-done    { border-color: #a8dfc9; background: #f0faf6; }
+        .exam-result-card.exam-error   { border-color: #f5c6cb; background: #fff5f5; }
+
+        .exam-result-header {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .exam-result-header small { color: #888; font-weight: normal; margin-right: 4px; }
+
+        .exam-result-body { color: #444; line-height: 1.4; }
+        .exam-result-body p { margin: 2px 0; }
+        .exam-result-body ul, .exam-result-body ol { margin: 2px 0 2px 14px; padding: 0; }
+        .exam-result-body li { margin: 1px 0; }
+
+        .exam-result-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 4px;
+            padding: 2px 6px;
+            background: #f5f0ff;
+            border: 1px solid #d8c8f8;
+            border-radius: 20px;
+            font-size: 10px;
+            color: #6b4fa8;
+        }
+
+        .exam-tools-section {
+            flex-shrink: 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 8px 10px;
+        }
+        .exam-tools-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .exam-tool-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .exam-tool-item input[type="checkbox"] {
+            cursor: pointer;
+            accent-color: #20c997;
+        }
+        .exam-tool-web input[type="checkbox"] {
+            accent-color: #667eea;
+        }
+
+        .exam-runs-input {
+            width: 52px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 5px 6px;
+            font-size: 13px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .exam-run-sep {
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #667eea;
+            background: #f0f0ff;
+            border-radius: 6px;
+            padding: 5px 10px;
+            margin: 2px 0;
+            flex-shrink: 0;
+        }
+        .run-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            font-size: 10px;
+            padding: 1px 7px;
+            border-radius: 10px;
+            margin-left: 5px;
+            font-weight: normal;
+            vertical-align: middle;
+        }
+        .exam-judge-row {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .btn-judge {
+            background: #6f42c1;
+            color: white;
+            border: none;
+            white-space: nowrap;
+        }
+        .btn-judge:hover { background: #5a32a3; }
+        .btn-judge:disabled { background: #ccc; cursor: not-allowed; }
+
+        .exam-judge-status {
+            font-size: 11px;
+            color: #666;
+            flex: 1;
+        }
+        .exam-judge-progress {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -391,7 +693,6 @@
         <div class="chat-section">
             <div class="chat-header">
                 <h1>Map Chat</h1>
-                <p>שלב א׳ - Baseline</p>
             </div>
 
             <div class="chat-messages" id="messages"></div>
@@ -434,6 +735,9 @@
                     <button class="btn btn-toggle" onclick="toggleWebSearch()" id="webToggleBtn">
                         אינטרנט: OFF
                     </button>
+                    <button class="btn btn-exam" onclick="openExamModal()">
+                        🧪 בדיקה
+                    </button>
                 </div>
 
                 <div style="display:flex; gap:8px;">
@@ -457,6 +761,81 @@
             <div class="info-box">
                 <strong>לחץ על המפה</strong><br/>
                 בחר נקודה להתחיל
+            </div>
+        </div>
+    </div>
+
+    <!-- Exam Modal -->
+    <div class="exam-overlay" id="examOverlay" onclick="examOverlayClick(event)">
+        <div class="exam-modal" id="examModal">
+            <div class="exam-header">
+                <span>🧪 בדיקה — 30 מקומות</span>
+                <button class="exam-close" onclick="closeExamModal()">✕</button>
+            </div>
+            <div class="exam-body">
+                <div class="exam-places-section">
+                    <div class="exam-section-title">
+                        <span>בחר מקומות לבדיקה:</span>
+                        <button class="exam-toggle-all" id="examToggleAllBtn" onclick="toggleAllExamPlaces()">בטל הכל</button>
+                    </div>
+                    <div class="exam-places-grid" id="examPlacesGrid"></div>
+                </div>
+
+                <div class="exam-tools-section">
+                    <div class="exam-section-title">
+                        <span>🔧 כלים:</span>
+                        <button class="exam-toggle-all" onclick="toggleAllExamTools()" id="examToggleToolsBtn">בחר הכל</button>
+                    </div>
+                    <div class="exam-tools-row">
+                        <label class="exam-tool-item">
+                            <input type="checkbox" id="examToolGoogle" onchange="updateExamToolsBtn()">
+                            🏙️ מקומות קרובים
+                        </label>
+                        <label class="exam-tool-item">
+                            <input type="checkbox" id="examToolTransit" onchange="updateExamToolsBtn()">
+                            🚌 תחבורה
+                        </label>
+                        <label class="exam-tool-item">
+                            <input type="checkbox" id="examToolWiki" onchange="updateExamToolsBtn()">
+                            📖 Wikipedia
+                        </label>
+                        <label class="exam-tool-item exam-tool-web">
+                            <input type="checkbox" id="examToolWeb">
+                            🌐 אינטרנט
+                        </label>
+                    </div>
+                </div>
+
+                <div class="exam-controls-row">
+                    <label class="exam-question-label">שאלה:</label>
+                    <select class="exam-question-select" id="examQuestion">
+                        <option value="מה יש כאן?">מה יש כאן?</option>
+                        <option value="מה יש כאן תחבורתית?">מה יש כאן תחבורתית?</option>
+                    </select>
+                    <label class="exam-question-label" style="white-space:nowrap">🔁 ריצות:</label>
+                    <input type="number" id="examRuns" class="exam-runs-input" min="1" max="10" value="1">
+                    <div class="exam-progress-wrap" id="examProgressWrap" style="display:none">
+                        <div class="exam-progress-bar">
+                            <div class="exam-progress-fill" id="examProgressFill" style="width:0%"></div>
+                        </div>
+                        <span class="exam-progress-text" id="examProgressText">0/0</span>
+                    </div>
+                    <button class="btn btn-primary exam-run-btn" onclick="runExam()" id="examRunBtn">▶ הפעל</button>
+                </div>
+                <div class="exam-judge-row" id="examJudgeRow" style="display:none">
+                    <button class="btn btn-judge" onclick="generateJudgingReport()" id="examJudgeBtn">
+                        📊 צור מסמך שפיטה
+                    </button>
+                    <span class="exam-judge-status" id="examJudgeStatus">שני שופטים: 🔵 Gemini (תחבורה) + 🟢 OpenAI (שפה)</span>
+                </div>
+                <div class="exam-judge-progress" id="examJudgeProgress" style="display:none">
+                    <div class="exam-progress-bar">
+                        <div class="exam-progress-fill" id="examJudgeProgressFill" style="width:0%; background:#6f42c1"></div>
+                    </div>
+                    <span class="exam-progress-text" id="examJudgeProgressText">0/0</span>
+                </div>
+
+                <div class="exam-results" id="examResults"></div>
             </div>
         </div>
     </div>
@@ -694,13 +1073,306 @@
             }
         }
 
+        // ── Exam modal ───────────────────────────────────────────
+        let examResultsData = [];
+
+        const EXAM_PLACES = [
+            {index:1,  name:"מרכז עזריאלי / צומת השלום", city:"תל אביב",   lat:32.07473,        lon:34.79186},
+            {index:2,  name:"שרונה מרקט",                city:"תל אביב",   lat:32.0717,         lon:34.7876},
+            {index:3,  name:"כיכר רבין",                 city:"תל אביב",   lat:32.08055,        lon:34.78057},
+            {index:4,  name:"דיזנגוף סנטר",              city:"תל אביב",   lat:32.07543,        lon:34.77455},
+            {index:5,  name:"הבימה",                     city:"תל אביב",   lat:32.07228,        lon:34.77935},
+            {index:6,  name:"תחנה מרכזית חדשה",          city:"תל אביב",   lat:32.05596,        lon:34.77918},
+            {index:7,  name:"אוניברסיטת תל אביב",        city:"תל אביב",   lat:32.11331,        lon:34.80439},
+            {index:8,  name:"נמל תל אביב",               city:"תל אביב",   lat:32.0968,         lon:34.7739},
+            {index:9,  name:"כיכר השעון",                city:"יפו",       lat:32.05514362,     lon:34.75627171},
+            {index:10, name:"שוק הפשפשים",               city:"יפו",       lat:32.05351887,     lon:34.75611507},
+            {index:11, name:"נמל יפו",                   city:"יפו",       lat:32.0521,         lon:34.75},
+            {index:12, name:"קניון איילון",               city:"רמת גן",   lat:32.10040474,     lon:34.82718846},
+            {index:13, name:"צומת ביאליק / ז׳בוטינסקי", city:"רמת גן",   lat:32.08575866,     lon:34.81133444},
+            {index:14, name:"מתחם הבורסה",               city:"רמת גן",   lat:32.0839,         lon:34.8008},
+            {index:15, name:"הפארק הלאומי",              city:"רמת גן",   lat:32.052844,       lon:34.82289224},
+            {index:16, name:"בית חולים שיבא",            city:"רמת גן",   lat:32.0469,         lon:34.8423},
+            {index:17, name:"מגדלי BSR / מתחם BBC",      city:"בני ברק",  lat:32.0947763,      lon:34.82404499},
+            {index:18, name:"תחנת רכבת בני ברק",         city:"בני ברק",  lat:32.1027,         lon:34.8294},
+            {index:19, name:"רח׳ רבי עקיבא / ירושלים",  city:"בני ברק",  lat:32.0862884,      lon:34.83009007},
+            {index:20, name:"הקניון הגדול",              city:"פתח תקווה", lat:32.0914,         lon:34.8651},
+            {index:21, name:"מרכז רפואי רבין בלינסון",  city:"פתח תקווה", lat:32.0879,         lon:34.8678},
+            {index:22, name:"עיריית פתח תקווה",          city:"פתח תקווה", lat:32.0872,         lon:34.8875},
+            {index:23, name:"צומת סגולה",                city:"פתח תקווה", lat:32.10203682,     lon:34.89784292},
+            {index:24, name:"צומת סירקין",               city:"פתח תקווה", lat:32.08243836,     lon:34.902408},
+            {index:25, name:"קניון עזריאלי חולון",       city:"חולון",    lat:32.0126,         lon:34.779},
+            {index:26, name:"המדיטק",                    city:"חולון",    lat:32.0139,         lon:34.7799},
+            {index:27, name:"פארק פרס / ימית 2000",      city:"חולון",    lat:32.00385137,     lon:34.79439863},
+            {index:28, name:"קניון בת ים / BIG Fashion", city:"בת ים",    lat:32.01539803,     lon:34.75626351},
+            {index:29, name:"קניון רננים",               city:"רעננה",    lat:32.1975379,      lon:34.87843991},
+            {index:30, name:"קניון ערים",                city:"כפר סבא",  lat:32.17682945,     lon:34.90331354},
+        ];
+
+        let examRunning = false;
+
+        function openExamModal() {
+            document.getElementById('examOverlay').style.display = 'flex';
+            renderExamPlaces();
+        }
+
+        function closeExamModal() {
+            if (examRunning) return;
+            document.getElementById('examOverlay').style.display = 'none';
+        }
+
+        function examOverlayClick(e) {
+            if (e.target === document.getElementById('examOverlay')) closeExamModal();
+        }
+
+        function renderExamPlaces() {
+            const grid = document.getElementById('examPlacesGrid');
+            grid.innerHTML = EXAM_PLACES.map(p =>
+                `<label class="exam-place-item">
+                    <input type="checkbox" value="${p.index}" checked onchange="updateExamToggleBtn()">
+                    <span title="${p.name} — ${p.city}">${p.index}. ${p.name}</span>
+                </label>`
+            ).join('');
+            updateExamToggleBtn();
+        }
+
+        function toggleAllExamPlaces() {
+            const boxes = document.querySelectorAll('#examPlacesGrid input[type="checkbox"]');
+            const allChecked = Array.from(boxes).every(cb => cb.checked);
+            boxes.forEach(cb => { cb.checked = !allChecked; });
+            updateExamToggleBtn();
+        }
+
+        function updateExamToggleBtn() {
+            const boxes = document.querySelectorAll('#examPlacesGrid input[type="checkbox"]');
+            const allChecked = boxes.length > 0 && Array.from(boxes).every(cb => cb.checked);
+            document.getElementById('examToggleAllBtn').textContent = allChecked ? 'בטל הכל' : 'בחר הכל';
+        }
+
+        function toggleAllExamTools() {
+            const toolBoxes = ['examToolGoogle', 'examToolTransit', 'examToolWiki'];
+            const allChecked = toolBoxes.every(id => document.getElementById(id).checked);
+            toolBoxes.forEach(id => { document.getElementById(id).checked = !allChecked; });
+            updateExamToolsBtn();
+        }
+
+        function updateExamToolsBtn() {
+            const toolBoxes = ['examToolGoogle', 'examToolTransit', 'examToolWiki'];
+            const allChecked = toolBoxes.every(id => document.getElementById(id).checked);
+            document.getElementById('examToggleToolsBtn').textContent = allChecked ? 'בטל הכל' : 'בחר הכל';
+        }
+
+        async function runExam() {
+            const selected = Array.from(document.querySelectorAll('#examPlacesGrid input[type="checkbox"]:checked'))
+                .map(cb => parseInt(cb.value));
+            if (selected.length === 0) { alert('בחר לפחות מקום אחד'); return; }
+
+            const places = EXAM_PLACES.filter(p => selected.includes(p.index));
+            const question = document.getElementById('examQuestion').value || 'מה יש כאן?';
+
+            const toolGoogle  = document.getElementById('examToolGoogle').checked;
+            const toolTransit = document.getElementById('examToolTransit').checked;
+            const toolWiki    = document.getElementById('examToolWiki').checked;
+            const toolWeb     = document.getElementById('examToolWeb').checked;
+
+            const enabledTools = [];
+            if (toolGoogle)  enabledTools.push(...GOOGLE_TOOLS);
+            if (toolTransit) enabledTools.push(...TRANSIT_TOOLS);
+            if (toolWiki)    enabledTools.push('get_wikipedia_context');
+
+            const hasMcp = enabledTools.length > 0;
+            const scenarioType = hasMcp ? 'mcp' : (toolWeb ? 'web_grounded' : 'baseline');
+
+            const progressWrap = document.getElementById('examProgressWrap');
+            const progressFill = document.getElementById('examProgressFill');
+            const progressText = document.getElementById('examProgressText');
+            const resultsDiv = document.getElementById('examResults');
+            const runBtn = document.getElementById('examRunBtn');
+            const checkboxes = document.querySelectorAll('#examPlacesGrid input[type="checkbox"]');
+
+            const totalRuns = Math.max(1, Math.min(10, parseInt(document.getElementById('examRuns').value) || 1));
+            const totalItems = places.length * totalRuns;
+
+            progressWrap.style.display = 'flex';
+            resultsDiv.innerHTML = '';
+            runBtn.disabled = true;
+            checkboxes.forEach(cb => cb.disabled = true);
+            examRunning = true;
+            examResultsData = [];
+            document.getElementById('examJudgeRow').style.display = 'none';
+            document.getElementById('examJudgeStatus').textContent = 'שני שופטים: 🔵 Gemini (תחבורה) + 🟢 OpenAI (שפה)';
+
+            let doneCount = 0;
+
+            for (let run = 1; run <= totalRuns; run++) {
+                if (totalRuns > 1) {
+                    const sep = document.createElement('div');
+                    sep.className = 'exam-run-sep';
+                    sep.textContent = `ריצה ${run} / ${totalRuns}`;
+                    resultsDiv.appendChild(sep);
+                    resultsDiv.scrollTop = resultsDiv.scrollHeight;
+                }
+
+                for (let i = 0; i < places.length; i++) {
+                    const place = places[i];
+                    progressFill.style.width = `${Math.round(doneCount / totalItems * 100)}%`;
+                    progressText.textContent = totalRuns > 1
+                        ? `${doneCount}/${totalItems} — ריצה ${run}/${totalRuns} — ${place.name}`
+                        : `${doneCount}/${totalItems} — ${place.name}`;
+
+                    const runBadge = totalRuns > 1 ? `<span class="run-badge">ריצה ${run}</span>` : '';
+                    const card = document.createElement('div');
+                    card.className = 'exam-result-card exam-pending';
+                    card.innerHTML = `
+                        <div class="exam-result-header">${runBadge}${place.index}. ${place.name} <small>${place.city}</small></div>
+                        <div class="exam-result-body">⏳ שולח בקשה...</div>`;
+                    resultsDiv.appendChild(card);
+                    resultsDiv.scrollTop = resultsDiv.scrollHeight;
+
+                    try {
+                        const res = await fetch(`${API_BASE}/api/v1/ask`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                lat: place.lat, lon: place.lon, question,
+                                scenario_type: scenarioType,
+                                enabled_tools: enabledTools,
+                                use_web_search: toolWeb,
+                            })
+                        });
+                        if (res.ok) {
+                            const data = await res.json();
+                            const usedTools = data.tools_used ? JSON.parse(data.tools_used) : [];
+                            const badgeParts = ['Claude'];
+                            if (usedTools.some(t => GOOGLE_TOOLS.includes(t))) badgeParts.push('🏙️ Google');
+                            if (usedTools.some(t => TRANSIT_TOOLS.includes(t))) badgeParts.push('🚌 Transit');
+                            if (usedTools.includes('get_wikipedia_context')) badgeParts.push('📖 Wikipedia');
+                            if (data.model_used?.includes('+web_search')) badgeParts.push('🌐 Web');
+                            card.className = 'exam-result-card exam-done';
+                            card.querySelector('.exam-result-body').innerHTML =
+                                (typeof marked !== 'undefined' ? marked.parse(data.answer) : data.answer) +
+                                `<div class="exam-result-badge">${badgeParts.join(' · ')}</div>`;
+                            examResultsData.push({
+                                index: place.index, name: place.name, city: place.city,
+                                lat: place.lat, lon: place.lon, question,
+                                answer: data.answer,
+                                scenario_type: scenarioType,
+                                tools_used: usedTools,
+                                run,
+                            });
+                        } else {
+                            card.className = 'exam-result-card exam-error';
+                            card.querySelector('.exam-result-body').textContent = `שגיאה ${res.status}`;
+                        }
+                    } catch (err) {
+                        card.className = 'exam-result-card exam-error';
+                        card.querySelector('.exam-result-body').textContent = `שגיאה: ${err.message}`;
+                    }
+
+                    doneCount++;
+                    resultsDiv.scrollTop = resultsDiv.scrollHeight;
+                }
+            }
+
+            progressFill.style.width = '100%';
+            progressText.textContent = `${totalItems}/${totalItems} — הושלם ✓`;
+            runBtn.disabled = false;
+            checkboxes.forEach(cb => cb.disabled = false);
+            examRunning = false;
+            if (examResultsData.length > 0) {
+                document.getElementById('examJudgeRow').style.display = 'flex';
+            }
+        }
+
+        async function generateJudgingReport() {
+            if (examResultsData.length === 0) return;
+
+            const btn        = document.getElementById('examJudgeBtn');
+            const status     = document.getElementById('examJudgeStatus');
+            const progressWrap = document.getElementById('examJudgeProgress');
+            const fill       = document.getElementById('examJudgeProgressFill');
+            const ptext      = document.getElementById('examJudgeProgressText');
+
+            btn.disabled = true;
+            progressWrap.style.display = 'flex';
+            fill.style.width = '0%';
+
+            const toolNames = [];
+            if (document.getElementById('examToolGoogle').checked) toolNames.push('🏙️ Google Places');
+            if (document.getElementById('examToolTransit').checked) toolNames.push('🚌 Transit');
+            if (document.getElementById('examToolWiki').checked)    toolNames.push('📖 Wikipedia');
+            if (document.getElementById('examToolWeb').checked)     toolNames.push('🌐 Web');
+
+            const question     = document.getElementById('examQuestion').value || 'מה יש כאן?';
+            const scenarioType = examResultsData[0]?.scenario_type || 'baseline';
+            const total        = examResultsData.length;
+            const judgments    = [];
+
+            try {
+                for (let i = 0; i < examResultsData.length; i++) {
+                    const item = examResultsData[i];
+                    const runLabel = item.run > 1 ? ` (ריצה ${item.run})` : '';
+                    status.textContent  = `⚖️ שופט ${i + 1}/${total}: ${item.name}${runLabel}`;
+                    fill.style.width    = `${Math.round(i / total * 100)}%`;
+                    ptext.textContent   = `${i}/${total}`;
+
+                    let judgment = { gemini: { transport_score: 0 }, openai: { language_score: 0 }, final_score: 0 };
+                    try {
+                        const res = await fetch(`${API_BASE}/api/v1/exam/judge-one`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(item),
+                        });
+                        if (res.ok) judgment = await res.json();
+                        else status.textContent = `⚠️ שגיאה ב-${item.name} (${res.status}) — ממשיך...`;
+                    } catch (e) {
+                        status.textContent = `⚠️ שגיאת רשת ב-${item.name} — ממשיך...`;
+                    }
+
+                    judgments.push({
+                        place: { index: item.index, name: item.name, city: item.city,
+                                 lat: item.lat, lon: item.lon, run: item.run || 1 },
+                        question: item.question,
+                        answer: item.answer,
+                        gemini: judgment.gemini,
+                        openai: judgment.openai,
+                        final_score: judgment.final_score,
+                    });
+                }
+
+                fill.style.width  = '100%';
+                ptext.textContent = `${total}/${total}`;
+                status.textContent = '📄 מייצר דוח HTML...';
+
+                const buildRes = await fetch(`${API_BASE}/api/v1/exam/build-report`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ judgments, question, scenario_type: scenarioType, tools_used: toolNames }),
+                });
+
+                if (!buildRes.ok) {
+                    const err = await buildRes.json().catch(() => ({}));
+                    throw new Error(err.detail || `שגיאה ${buildRes.status}`);
+                }
+
+                const data = await buildRes.json();
+                status.textContent = `✅ הדוח נשמר: evaluation/${data.filename}`;
+                const blob = new Blob([data.html], { type: 'text/html; charset=utf-8' });
+                window.open(URL.createObjectURL(blob), '_blank');
+
+            } catch (err) {
+                status.textContent = `❌ שגיאה: ${err.message}`;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
         // Initialize when page loads
         window.onload = function() {
             initMap();
             checkServerStatus();
             setInterval(checkServerStatus, 10000);
             addMessage('שלום! 👋 בחר נקודה על המפה, ואז שאל שאלה.', 'assistant');
-            addMessage('זה שלב א׳ - Baseline LLM ללא grounding מרחבי.', 'assistant');
         };
     </script>
 </body>

@@ -32,8 +32,6 @@ logs/
 # Claude Code project settings
 .claude/
 
-# Evaluation files (add manually after Dropbox sync)
-evaluation/
 
 # GNN training data (large files — download separately)
 אימון GNN/data/

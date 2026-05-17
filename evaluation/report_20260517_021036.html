@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>דוח שפיטה — Map Chat</title>
+<style>
+body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:#f0f2f5;color:#333;margin:0;padding:20px;direction:rtl}
+.hdr{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:22px 28px;border-radius:12px;margin-bottom:20px}
+.hdr h1{margin:0 0 8px;font-size:21px}
+.meta{display:flex;gap:16px;font-size:12px;opacity:.88;flex-wrap:wrap;margin-top:6px}
+.meta b{opacity:.75;font-weight:normal}
+.card{background:#fff;border-radius:10px;padding:18px 22px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.card h2{margin:0 0 12px;font-size:15px;color:#444}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f5f5f5;padding:9px 12px;text-align:right;border-bottom:2px solid #e0e0e0;font-weight:600}
+tbody td{padding:8px 12px;border-bottom:1px solid #f0f0f0}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#fafafa}
+a{color:#667eea;text-decoration:none}
+a:hover{text-decoration:underline}
+.pc{background:#fff;border-radius:10px;padding:20px 24px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.pc h2{margin:0 0 4px;font-size:17px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ctag{font-size:12px;font-weight:normal;color:#888;background:#f0f0f0;padding:2px 8px;border-radius:10px}
+.fbadge{color:#fff;padding:4px 12px;border-radius:12px;font-size:14px;font-weight:bold}
+.coords{font-size:11px;color:#aaa;margin-bottom:12px}
+.ans{background:#fafbff;border:1px solid #e8ecf8;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:13px;line-height:1.65}
+.anslbl{font-size:10px;color:#aaa;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.jgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px}
+.jbox{border:1px solid #e0e0e0;border-radius:8px;padding:14px 16px}
+.jbox.gm{border-color:#4285f4;background:#f8fbff}
+.jbox.oa{border-color:#10a37f;background:#f4fff9}
+.jbox h3{margin:0 0 10px;font-size:13px}
+.st td{padding:3px 8px;font-size:12px;border-bottom:none}
+.st tr.tot td{border-top:1px solid #ddd;padding-top:7px;font-weight:bold}
+.issue{font-size:11px;color:#666;margin:3px 0}
+.expl{font-size:12px;color:#666;font-style:italic;border-top:1px solid #eee;padding-top:8px;margin-top:8px}
+.formula{background:#f8f9fa;border-radius:6px;padding:9px 14px;font-size:13px}
+.avgsep td{border-top:2px solid #ccc;background:#f5f5f5;font-weight:bold}
+.runsep{text-align:center;font-size:13px;font-weight:bold;color:#667eea;background:#f0f0ff;border-radius:8px;padding:8px;margin:10px 0}
+.rbadge{display:inline-block;background:#667eea;color:#fff;font-size:10px;padding:1px 7px;border-radius:10px;margin-left:5px;font-weight:normal;vertical-align:middle}
+.noise-box{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px}
+.noise-box h4{margin:0 0 6px;font-size:13px;color:#795548}
+.noise-row{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}
+.noise-chip{background:#fff;border:1px solid #ddd;border-radius:6px;padding:3px 8px;font-size:11px;color:#555}
+@media(max-width:650px){.jgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <h1>📊 דוח שפיטה — Map Chat</h1>
+  <div class="meta">
+    <span><b>תאריך:</b> 2026-05-17 02:10</span>
+    <span><b>שאלה:</b> מה יש כאן תחבורתית?</span>
+    <span><b>מצב:</b> gnn</span>
+    <span><b>כלים:</b> 📖 Wikipedia</span>
+  </div>
+</div>
+<div class="card">
+  <h2>📋 סיכום — 1 מקומות</h2>
+  <table>
+    <thead><tr><th>#</th><th>מקום</th><th>עיר</th>
+      <th>TransportScore<br><small style="font-weight:normal">Gemini /100</small></th>
+      <th>LanguageScore<br><small style="font-weight:normal">OpenAI /100</small></th>
+      <th>FinalScore</th></tr></thead>
+    <tbody><tr><td>1</td><td><a href="#p1">מרכז עזריאלי / צומת השלום</a></td><td>תל אביב</td><td style="color:#28a745;font-weight:bold">98.0</td><td style="color:#28a745;font-weight:bold">85.0</td><td style="color:#28a745;font-weight:bold;font-size:1.1em">94.1</td></tr>
+<tr class="avgsep"><td colspan="3">ממוצע (1 מקומות)</td><td style="color:#28a745">98.0</td><td style="color:#28a745">85.0</td><td style="color:#28a745;font-size:1.1em">94.1</td></tr>
+</tbody>
+  </table>
+</div>
+
+<div class="pc" id="p1">
+  <h2>1. מרכז עזריאלי / צומת השלום <span class="ctag">תל אביב</span>
+    <span class="fbadge" style="background:#28a745">94.1</span></h2>
+  <div class="coords">📍 32.07473, 34.79186</div>
+  
+<div class="jgrid" style="margin-bottom:12px">
+  <div class="jbox gm">
+    <h3>🔵 Gemini — תחבורה </h3>
+    <table class="st">
+      <tr><td>Factuality</td><td>/35</td><td style="color:#28a745;font-weight:bold">35</td></tr>
+      <tr><td>Transport Coverage</td><td>/25</td><td style="color:#28a745;font-weight:bold">25</td></tr>
+      <tr><td>Spatial Specificity</td><td>/20</td><td style="color:#28a745;font-weight:bold">18</td></tr>
+      <tr><td>Distance Accuracy</td><td>/10</td><td style="color:#28a745;font-weight:bold">10</td></tr>
+      <tr><td>Hallucination Control</td><td>/10</td><td style="color:#28a745;font-weight:bold">10</td></tr>
+      <tr class="tot"><td colspan="2">TransportScore</td><td style="color:#28a745;font-size:1.15em">98/100</td></tr>
+    </table>
+    <div class="expl">💬 The paragraph provides a highly accurate and specific description of the transportation at the given coordinates. It correctly identifies Menachem Begin Road as a central junction and accurately mentions the presence of many bus stops, light rail (קל&quot;ק - Shaul Hamelech), and train stations (HaShalom), which are all major transportation assets in the immediate vicinity. The geographic grounding is strong, and there are no hallucinations or factual errors. The implicit distances are realistic.</div>
+  </div>
+  <div class="jbox oa">
+    <h3>🟢 OpenAI — שפה </h3>
+    <table class="st">
+      <tr><td>Clarity</td><td>/25</td><td style="color:#28a745;font-weight:bold">20</td></tr>
+      <tr><td>Conciseness</td><td>/20</td><td style="color:#ffc107;font-weight:bold">15</td></tr>
+      <tr><td>Relevance</td><td>/20</td><td style="color:#28a745;font-weight:bold">20</td></tr>
+      <tr><td>User Usefulness</td><td>/20</td><td style="color:#28a745;font-weight:bold">20</td></tr>
+      <tr><td>Info Density &amp; Locality</td><td>/15</td><td style="color:#ffc107;font-weight:bold">10</td></tr>
+      <tr class="tot"><td colspan="2">LanguageScore</td><td style="color:#28a745;font-size:1.15em">85/100</td></tr>
+    </table>
+    <div class="issue"><strong>📝 ורבוזיות:</strong> Some redundancy in describing the importance of the junction.</div><div class="issue"><strong>⚠️ בעיות איכות:</strong> Could benefit from specifying exact bus and train lines.</div><div class="expl">💬 Overall, the paragraph is clear and contextually relevant, providing useful transportation information, though it could be more concise and dense with specific details.</div>
+  </div>
+</div>
+<div class="ans" style="margin-bottom:8px">
+  <div class="anslbl">תשובה (מה יש כאן תחבורתית?)</div>
+  **רחוב מנחם בגין בתל אביב** הוא צומת תחבורתית מרכזית ומשמעותית בעיר, המשמשת כנקודת חיבור בין מספר רב של קווי תחבורה ציבורית. באזור זה מתקבצות תחנות אוטובוס רבות לצד תחנות קל&quot;ק ורכבת, מה שהופך אותו לממשק חשוב בין מערכות התחבורה השונות בעיר. הכקישוריות הגבוהה של הצומת והצפיפות הגבוהה של אתרי תחבורה משקפות את חשיבותו כחוליה מרכזית בתשתית התחבורה של תל אביב-יפו, המטרופוליני העיר.
+</div>
+<div class="formula">FinalScore = 0.7 × 98 + 0.3 × 85 = <strong style="color:#28a745;font-size:1.1em">94.1</strong></div>
+
+</div>
+
+</body>
+</html>

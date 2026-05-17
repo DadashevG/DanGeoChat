@@ -1,0 +1,131 @@
+{
+  "evaluation": {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "query_id": 50,
+    "evaluated_at": "2026-04-30T15:30:00",
+    "evaluator_type": "llm",
+    "evaluator_model": "claude-opus-4-7"
+  },
+
+  "query_snapshot": {
+    "question": "מה יש בסביבה הקרובה?",
+    "lat": 32.0853,
+    "lon": 34.7818,
+    "scenario_type": "mcp",
+    "tools_used": ["reverse_geocode", "get_nearby_places"],
+    "answer": "מיקום: רחוב ארלוזורוב, הצפון הישן, תל אביב.\n\n**מה בסביבה (500מ'):**\n1. AM:PM – סופרמרקט (48מ')\n2. Super-Pharm – בית מרקחת (154מ')\n3. שופרסל – סופרמרקט (257מ')",
+    "model_used": "claude-haiku-4-5-20251001+mcp",
+    "tokens_used": 420
+  },
+
+  "ground_truth": {
+    "verified_address": {
+      "road": "ארלוזורוב",
+      "suburb": "הצפון הישן",
+      "city": "תל אביב"
+    },
+    "verified_places_nearby": [
+      { "name": "AM:PM",      "type": "supermarket", "distance_m": 48  },
+      { "name": "Super-Pharm","type": "pharmacy",    "distance_m": 154 },
+      { "name": "שופרסל",     "type": "supermarket", "distance_m": 257 }
+    ],
+    "source": "nominatim"
+  },
+
+  "scores": {
+    "location_accuracy": {
+      "score": 1.0,
+      "city_correct": true,
+      "suburb_correct": true,
+      "road_correct": true,
+      "error_distance_km": null,
+      "reasoning": "זיהוי מדויק — עיר, שכונה ורחוב תואמים ground truth"
+    },
+
+    "place_names_accuracy": {
+      "score": 1.0,
+      "mentioned_places": ["AM:PM", "Super-Pharm", "שופרסל"],
+      "verified_count": 3,
+      "hallucinated_count": 0,
+      "unverifiable_count": 0,
+      "reasoning": "כל 3 המקומות אומתו ב-ground truth"
+    },
+
+    "relevance": {
+      "score": 0.9,
+      "reasoning": "ענה ישירות לשאלה עם מידע רלוונטי. קצת חסר מידע על תחבורה ציבורית"
+    },
+
+    "groundedness": {
+      "score": 1.0,
+      "tool_was_used": true,
+      "data_cited": true,
+      "data_used_correctly": true,
+      "answer_consistent_with_data": true,
+      "reasoning": "השתמש ב-reverse_geocode ו-get_nearby_places עם הקואורדינטה הנכונה. הנתונים בתשובה תואמים את פלט הכלים מ-OSM"
+    },
+
+    "hallucination": {
+      "score": 1.0,
+      "detected": false,
+      "examples": [],
+      "severity": "none",
+      "reasoning": "כל פרט שהוזכר אומת מול ground truth"
+    },
+
+    "conciseness": {
+      "score": 0.9,
+      "word_count": 52,
+      "reasoning": "תשובה ממוקדת ומובנית היטב"
+    },
+
+    "spatial_awareness": {
+      "score": 0.85,
+      "reasoning": "ציין מרחקים מדויקים, הבין שמדובר באזור עירוני צפוף"
+    },
+
+    "uncertainty_handling": {
+      "score": 1.0,
+      "expressed_uncertainty_when_needed": true,
+      "overclaimed_precision": false,
+      "reasoning": "לא ניסה לשער מידע שלא התקבל מהכלים. המרחקים שצוינו מגיעים ישירות מ-OSM"
+    },
+
+    "granularity": {
+      "score": 1.0,
+      "expected_level": "poi",
+      "predicted_level": "poi",
+      "match": true,
+      "reasoning": "השאלה ביקשה 'מה יש בסביבה' — ציפייה ל-POI. התשובה סיפקה רמת פירוט של POI עם שמות ומרחקים"
+    }
+  },
+
+  "failure_modes": [],
+
+  "weights": {
+    "location_accuracy":    0.25,
+    "place_names_accuracy": 0.20,
+    "groundedness":         0.20,
+    "hallucination":        0.10,
+    "relevance":            0.10,
+    "spatial_awareness":    0.05,
+    "uncertainty_handling": 0.05,
+    "granularity":          0.05
+  },
+
+  "total_score": 0.975,
+
+  "comparison": {
+    "baseline_query_id": 45,
+    "baseline_score": 0.35,
+    "mcp_score": 0.975,
+    "improvement_pct": 178.6,
+    "winner": "mcp"
+  },
+
+  "flags": {
+    "needs_human_review": false,
+    "is_edge_case": false,
+    "notes": "דוגמה מוצלחת — MCP נותן תשובה מדויקת. ניתן כ-golden example לvalidation של הscore pipeline"
+  }
+}

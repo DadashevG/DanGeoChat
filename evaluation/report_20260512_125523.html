@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>דוח שפיטה — Map Chat</title>
+<style>
+body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:#f0f2f5;color:#333;margin:0;padding:20px;direction:rtl}
+.hdr{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:22px 28px;border-radius:12px;margin-bottom:20px}
+.hdr h1{margin:0 0 8px;font-size:21px}
+.meta{display:flex;gap:16px;font-size:12px;opacity:.88;flex-wrap:wrap;margin-top:6px}
+.meta b{opacity:.75;font-weight:normal}
+.card{background:#fff;border-radius:10px;padding:18px 22px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.card h2{margin:0 0 12px;font-size:15px;color:#444}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f5f5f5;padding:9px 12px;text-align:right;border-bottom:2px solid #e0e0e0;font-weight:600}
+tbody td{padding:8px 12px;border-bottom:1px solid #f0f0f0}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#fafafa}
+a{color:#667eea;text-decoration:none}
+a:hover{text-decoration:underline}
+.pc{background:#fff;border-radius:10px;padding:20px 24px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.pc h2{margin:0 0 4px;font-size:17px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ctag{font-size:12px;font-weight:normal;color:#888;background:#f0f0f0;padding:2px 8px;border-radius:10px}
+.fbadge{color:#fff;padding:4px 12px;border-radius:12px;font-size:14px;font-weight:bold}
+.coords{font-size:11px;color:#aaa;margin-bottom:12px}
+.ans{background:#fafbff;border:1px solid #e8ecf8;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:13px;line-height:1.65}
+.anslbl{font-size:10px;color:#aaa;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.jgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px}
+.jbox{border:1px solid #e0e0e0;border-radius:8px;padding:14px 16px}
+.jbox.gm{border-color:#4285f4;background:#f8fbff}
+.jbox.oa{border-color:#10a37f;background:#f4fff9}
+.jbox h3{margin:0 0 10px;font-size:13px}
+.st td{padding:3px 8px;font-size:12px;border-bottom:none}
+.st tr.tot td{border-top:1px solid #ddd;padding-top:7px;font-weight:bold}
+.issue{font-size:11px;color:#666;margin:3px 0}
+.expl{font-size:12px;color:#666;font-style:italic;border-top:1px solid #eee;padding-top:8px;margin-top:8px}
+.formula{background:#f8f9fa;border-radius:6px;padding:9px 14px;font-size:13px}
+.avgsep td{border-top:2px solid #ccc;background:#f5f5f5;font-weight:bold}
+@media(max-width:650px){.jgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <h1>📊 דוח שפיטה — Map Chat</h1>
+  <div class="meta">
+    <span><b>תאריך:</b> 2026-05-12 12:55</span>
+    <span><b>שאלה:</b> מה יש כאן תחבורתית?</span>
+    <span><b>מצב:</b> mcp</span>
+    <span><b>כלים:</b> 🏙️ Google Places, 🚌 Transit, 📖 Wikipedia, 🌐 Web</span>
+  </div>
+</div>
+<div class="card">
+  <h2>📋 סיכום — 2 מקומות</h2>
+  <table>
+    <thead><tr><th>#</th><th>מקום</th><th>עיר</th>
+      <th>TransportScore<br><small style="font-weight:normal">Gemini /100</small></th>
+      <th>LanguageScore<br><small style="font-weight:normal">OpenAI /100</small></th>
+      <th>FinalScore</th></tr></thead>
+    <tbody><tr><td>1</td><td><a href="#p1">מרכז עזריאלי / צומת השלום</a></td><td>תל אביב</td><td style="color:#dc3545;font-weight:bold">0</td><td style="color:#28a745;font-weight:bold">80</td><td style="color:#dc3545;font-weight:bold;font-size:1.1em">24.0</td></tr>
+<tr><td>2</td><td><a href="#p2">שרונה מרקט</a></td><td>תל אביב</td><td style="color:#dc3545;font-weight:bold">0</td><td style="color:#dc3545;font-weight:bold">25</td><td style="color:#dc3545;font-weight:bold;font-size:1.1em">7.5</td></tr>
+<tr class="avgsep"><td colspan="3">ממוצע (2 מקומות)</td><td style="color:#dc3545">0.0</td><td style="color:#fd7e14">52.5</td><td style="color:#dc3545;font-size:1.1em">15.8</td></tr>
+</tbody>
+  </table>
+</div>
+
+<div class="pc" id="p1">
+  <h2>1. מרכז עזריאלי / צומת השלום <span class="ctag">תל אביב</span>
+    <span class="fbadge" style="background:#dc3545">24.0</span></h2>
+  <div class="coords">📍 32.07473, 34.79186</div>
+  <div class="ans"><div class="anslbl">תשובה (מה יש כאן תחבורתית?)</div>דרך מנחם בגין בתל אביב-יפו היא דרך ראשית בעיר בה מצוי אתכם כעת. האזור עשיר בחיבורי תחבורה ציבוריים — במרחק קצר מכם נמצאים תחנות אוטובוס מרובות בקניון עזריאלי (בין 81 ל־124 מטר), תחנת הרכבת השלום (188 מטר) ותחנת הרכבת הקלה שאול המלך (216 מטר), כל אלו מאפשרים קישוריות טובה לחלקים שונים בעיר ובגוש דן. בקרבת המיקום ממוקם גם קניון עזריאלי, מרכז קניון גדול בתל אביב המהווה ציון דרך מרכזי בעיר. דרך מנחם בגין עצמה היא דרך ראשית שנקראה עד לשנת 2001 בשם דרך פתח תקווה, ובה מצוי מרכז עסקי ממשלתי משמעותי.</div>
+  <div class="jgrid">
+    <div class="jbox gm">
+      <h3>🔵 Gemini — תחבורה</h3>
+      <table class="st">
+        <tr><td>Factuality</td><td>/40</td><td style="color:#dc3545;font-weight:bold">0</td></tr>
+        <tr><td>Transport Coverage</td><td>/30</td><td style="color:#dc3545;font-weight:bold">0</td></tr>
+        <tr><td>Distance Accuracy</td><td>/20</td><td style="color:#dc3545;font-weight:bold">0</td></tr>
+        <tr><td>Hallucination Control</td><td>/10</td><td style="color:#dc3545;font-weight:bold">0</td></tr>
+        <tr class="tot"><td colspan="2">TransportScore</td><td style="color:#dc3545;font-size:1.15em">0/100</td></tr>
+      </table>
+      <div class="expl">💬 Gemini error: HTTP 404: {<br>  &quot;error&quot;: {<br>    &quot;code&quot;: 404,<br>    &quot;message&quot;: &quot;models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of availabl</div>
+    </div>
+    <div class="jbox oa">
+      <h3>🟢 OpenAI — שפה</h3>
+      <table class="st">
+        <tr><td>Clarity</td><td>/35</td><td style="color:#28a745;font-weight:bold">30</td></tr>
+        <tr><td>Conciseness</td><td>/25</td><td style="color:#ffc107;font-weight:bold">18</td></tr>
+        <tr><td>Relevance</td><td>/25</td><td style="color:#28a745;font-weight:bold">20</td></tr>
+        <tr><td>User Usefulness</td><td>/15</td><td style="color:#28a745;font-weight:bold">12</td></tr>
+        <tr class="tot"><td colspan="2">LanguageScore</td><td style="color:#28a745;font-size:1.15em">80/100</td></tr>
+      </table>
+      <div class="issue"><strong>📝 ורבוזיות:</strong> Mentioning the rebranding of the road to &#x27;דרך מנחם בגין&#x27; could be considered unnecessary context for a user focused primarily on transportation.</div><div class="issue"><strong>🔍 מידע לא רלוונטי:</strong> Historical naming of the road (old name &#x27;דרך פתח תקווה&#x27;) and detailed information about business significance could distract from current transportation options.</div><div class="expl">💬 The paragraph is generally clear but could be more concise and focused on current transportation options. Some historical context detracts from its usefulness.</div>
+    </div>
+  </div>
+  <div class="formula">FinalScore = 0.7 × 0 + 0.3 × 80 = <strong style="color:#dc3545;font-size:1.1em">24.0</strong></div>
+</div>
+
+<div class="pc" id="p2">
+  <h2>2. שרונה מרקט <span class="ctag">תל אביב</span>
+    <span class="fbadge" style="background:#dc3545">7.5</span></h2>
+  <div class="coords">📍 32.07170, 34.78760</div>
+  <div class="ans"><div class="anslbl">תשובה (מה יש כאן תחבורתית?)</div>הנקודה שאתה מחפש נמצאת ברחוב רב אלוף דוד אלעזר בתל אביב-יפו, באזור עשיר בתחבורה ציבורית. בקרבת המקום יש עמדת רכבל קלה בשם יהודית במרחק של כ-187 מטרים, וכמה עמדות אוטובוס בשורה: קריית הממשלה על דרך מנחם בגין (165-208 מטרים), שער קפלן (183 מטרים) וכן עמדות נוספות על דרך מנחם בגין ובקניון עזריאלי. השטח הוא בלב מרכזי עסקי ותיירותי חשוב של העיר, כשבסביבה הקרובה מצויים קניין עזריאלי שרונה, מגדלי הארבעה וקריית הממשלה, ובנוסף שוק האוכל שרונה מרקט במרחק קצר מאוד של 61 מטרים. רחובות תל אביב, כולל הרחוב שעליו אתה נמצא, קרויים על שמות אישיות חשובות בתולדות ישראל.</div>
+  <div class="jgrid">
+    <div class="jbox gm">
+      <h3>🔵 Gemini — תחבורה</h3>
+      <table class="st">
+        <tr><td>Factuality</td><td>/40</td><td style="color:#dc3545;font-weight:bold">0</td></tr>
+        <tr><td>Transport Coverage</td><td>/30</td><td style="color:#dc3545;font-weight:bold">0</td></tr>
+        <tr><td>Distance Accuracy</td><td>/20</td><td style="color:#dc3545;font-weight:bold">0</td></tr>
+        <tr><td>Hallucination Control</td><td>/10</td><td style="color:#dc3545;font-weight:bold">0</td></tr>
+        <tr class="tot"><td colspan="2">TransportScore</td><td style="color:#dc3545;font-size:1.15em">0/100</td></tr>
+      </table>
+      <div class="expl">💬 Gemini error: HTTP 404: {<br>  &quot;error&quot;: {<br>    &quot;code&quot;: 404,<br>    &quot;message&quot;: &quot;models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of availabl</div>
+    </div>
+    <div class="jbox oa">
+      <h3>🟢 OpenAI — שפה</h3>
+      <table class="st">
+        <tr><td>Clarity</td><td>/35</td><td style="color:#28a745;font-weight:bold">30</td></tr>
+        <tr><td>Conciseness</td><td>/25</td><td style="color:#ffc107;font-weight:bold">15</td></tr>
+        <tr><td>Relevance</td><td>/25</td><td style="color:#28a745;font-weight:bold">20</td></tr>
+        <tr><td>User Usefulness</td><td>/15</td><td style="color:#ffc107;font-weight:bold">10</td></tr>
+        <tr class="tot"><td colspan="2">LanguageScore</td><td style="color:#dc3545;font-size:1.15em">25/100</td></tr>
+      </table>
+      <div class="issue"><strong>📝 ורבוזיות:</strong> Lengthy descriptions of nearby sites that detract from the main focus on transportation.</div><div class="issue"><strong>🔍 מידע לא רלוונטי:</strong> Historical context about the street names.</div><div class="expl">💬 The paragraph provides useful transportation information but includes excessive details about nearby attractions and history, affecting overall conciseness and relevance.</div>
+    </div>
+  </div>
+  <div class="formula">FinalScore = 0.7 × 0 + 0.3 × 25 = <strong style="color:#dc3545;font-size:1.1em">7.5</strong></div>
+</div>
+
+</body>
+</html>

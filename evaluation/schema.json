@@ -1,0 +1,274 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://map-chat/evaluation/schema.json",
+  "title": "MapChat Evaluation Record",
+  "description": "Schema for evaluating a single Map Chat response against ground truth",
+  "type": "object",
+  "required": ["evaluation", "query_snapshot", "ground_truth", "scores", "weights", "total_score", "flags"],
+
+  "definitions": {
+    "score01": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "granularity_level": {
+      "type": "string",
+      "enum": ["poi", "street", "neighborhood", "city", "region", "unknown"]
+    },
+    "failure_mode": {
+      "type": "string",
+      "enum": [
+        "wrong_city",
+        "wrong_neighborhood",
+        "wrong_street",
+        "hallucinated_poi",
+        "missing_poi",
+        "tool_not_called",
+        "tool_called_wrong_params",
+        "answer_contradicts_tool_output",
+        "ignored_uncertainty",
+        "overclaimed_precision",
+        "language_error",
+        "off_topic"
+      ]
+    }
+  },
+
+  "properties": {
+
+    "evaluation": {
+      "type": "object",
+      "required": ["id", "query_id", "evaluated_at", "evaluator_type"],
+      "properties": {
+        "id":             { "type": "string", "format": "uuid" },
+        "query_id":       { "type": "integer" },
+        "evaluated_at":   { "type": "string", "format": "date-time" },
+        "evaluator_type": { "type": "string", "enum": ["human", "llm", "auto"] },
+        "evaluator_model":{ "type": ["string", "null"] }
+      }
+    },
+
+    "query_snapshot": {
+      "type": "object",
+      "required": ["question", "lat", "lon", "scenario_type", "answer", "model_used"],
+      "properties": {
+        "question":       { "type": "string" },
+        "lat":            { "type": "number", "minimum": -90,  "maximum": 90 },
+        "lon":            { "type": "number", "minimum": -180, "maximum": 180 },
+        "scenario_type":  { "type": "string", "enum": ["baseline", "web_grounded", "mcp"] },
+        "tools_used":     { "type": "array", "items": { "type": "string" } },
+        "answer":         { "type": "string" },
+        "model_used":     { "type": "string" },
+        "tokens_used":    { "type": ["integer", "null"] }
+      }
+    },
+
+    "ground_truth": {
+      "type": "object",
+      "required": ["verified_address", "source"],
+      "properties": {
+        "verified_address": {
+          "type": "object",
+          "required": ["city"],
+          "properties": {
+            "road":    { "type": ["string", "null"] },
+            "suburb":  { "type": ["string", "null"] },
+            "city":    { "type": "string" }
+          }
+        },
+        "verified_places_nearby": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "type", "distance_m"],
+            "properties": {
+              "name":       { "type": "string" },
+              "type":       { "type": "string" },
+              "distance_m": { "type": "integer", "minimum": 0 }
+            }
+          }
+        },
+        "source": { "type": "string", "enum": ["nominatim", "manual", "google_maps"] }
+      }
+    },
+
+    "scores": {
+      "type": "object",
+      "required": [
+        "location_accuracy",
+        "place_names_accuracy",
+        "relevance",
+        "groundedness",
+        "hallucination",
+        "conciseness",
+        "spatial_awareness",
+        "uncertainty_handling",
+        "granularity"
+      ],
+      "properties": {
+
+        "location_accuracy": {
+          "type": "object",
+          "required": ["score", "city_correct", "reasoning"],
+          "properties": {
+            "score":           { "$ref": "#/definitions/score01" },
+            "city_correct":    { "type": "boolean" },
+            "suburb_correct":  { "type": ["boolean", "null"] },
+            "road_correct":    { "type": ["boolean", "null"] },
+            "error_distance_km": { "type": ["number", "null"], "minimum": 0,
+              "description": "Estimated geographic error in km if city is wrong" },
+            "reasoning":       { "type": "string" }
+          }
+        },
+
+        "place_names_accuracy": {
+          "type": "object",
+          "required": ["score", "mentioned_places", "verified_count", "hallucinated_count", "reasoning"],
+          "properties": {
+            "score":              { "$ref": "#/definitions/score01" },
+            "mentioned_places":   { "type": "array", "items": { "type": "string" } },
+            "verified_count":     { "type": "integer", "minimum": 0 },
+            "hallucinated_count": { "type": "integer", "minimum": 0 },
+            "unverifiable_count": { "type": "integer", "minimum": 0,
+              "description": "Places not in ground truth but could exist (OSM incomplete)" },
+            "reasoning":          { "type": "string" }
+          }
+        },
+
+        "relevance": {
+          "type": "object",
+          "required": ["score", "reasoning"],
+          "properties": {
+            "score":     { "$ref": "#/definitions/score01" },
+            "reasoning": { "type": "string" }
+          }
+        },
+
+        "groundedness": {
+          "type": "object",
+          "required": ["score", "tool_was_used", "data_cited", "data_used_correctly", "answer_consistent_with_data", "reasoning"],
+          "properties": {
+            "score":                      { "$ref": "#/definitions/score01" },
+            "tool_was_used":              { "type": "boolean" },
+            "data_cited":                 { "type": "boolean" },
+            "data_used_correctly":        { "type": "boolean",
+              "description": "Tool was called with sensible params (right lat/lon, reasonable radius)" },
+            "answer_consistent_with_data":{ "type": "boolean",
+              "description": "Answer does not contradict what tools returned" },
+            "reasoning":                  { "type": "string" }
+          }
+        },
+
+        "hallucination": {
+          "type": "object",
+          "required": ["score", "detected", "severity", "reasoning"],
+          "properties": {
+            "score":    { "$ref": "#/definitions/score01" },
+            "detected": { "type": "boolean" },
+            "examples": { "type": "array", "items": { "type": "string" } },
+            "severity": { "type": "string", "enum": ["none", "minor", "major"] },
+            "reasoning":{ "type": "string" }
+          }
+        },
+
+        "conciseness": {
+          "type": "object",
+          "required": ["score", "word_count", "reasoning"],
+          "properties": {
+            "score":      { "$ref": "#/definitions/score01" },
+            "word_count": { "type": "integer", "minimum": 0 },
+            "reasoning":  { "type": "string" }
+          }
+        },
+
+        "spatial_awareness": {
+          "type": "object",
+          "required": ["score", "reasoning"],
+          "properties": {
+            "score":     { "$ref": "#/definitions/score01" },
+            "reasoning": { "type": "string" }
+          }
+        },
+
+        "uncertainty_handling": {
+          "type": "object",
+          "required": ["score", "expressed_uncertainty_when_needed", "overclaimed_precision", "reasoning"],
+          "properties": {
+            "score": { "$ref": "#/definitions/score01" },
+            "expressed_uncertainty_when_needed": { "type": "boolean",
+              "description": "When data was missing/partial, the model said so instead of guessing" },
+            "overclaimed_precision": { "type": "boolean",
+              "description": "Model stated specific facts it could not have known (e.g. exact distance without tool)" },
+            "reasoning": { "type": "string" }
+          }
+        },
+
+        "granularity": {
+          "type": "object",
+          "required": ["score", "expected_level", "predicted_level", "match", "reasoning"],
+          "properties": {
+            "score":           { "$ref": "#/definitions/score01" },
+            "expected_level":  { "$ref": "#/definitions/granularity_level",
+              "description": "What level of detail the question called for" },
+            "predicted_level": { "$ref": "#/definitions/granularity_level",
+              "description": "What level of detail the answer actually provides" },
+            "match":           { "type": "boolean",
+              "description": "true if predicted_level >= expected_level" },
+            "reasoning":       { "type": "string" }
+          }
+        }
+      }
+    },
+
+    "failure_modes": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/failure_mode" },
+      "description": "Observed failure taxonomy tags — empty array if no failures"
+    },
+
+    "weights": {
+      "type": "object",
+      "description": "Must sum to 1.0. Conciseness excluded from weighted total.",
+      "required": [
+        "location_accuracy", "place_names_accuracy", "groundedness",
+        "hallucination", "relevance", "spatial_awareness",
+        "uncertainty_handling", "granularity"
+      ],
+      "properties": {
+        "location_accuracy":    { "$ref": "#/definitions/score01" },
+        "place_names_accuracy": { "$ref": "#/definitions/score01" },
+        "groundedness":         { "$ref": "#/definitions/score01" },
+        "hallucination":        { "$ref": "#/definitions/score01" },
+        "relevance":            { "$ref": "#/definitions/score01" },
+        "spatial_awareness":    { "$ref": "#/definitions/score01" },
+        "uncertainty_handling": { "$ref": "#/definitions/score01" },
+        "granularity":          { "$ref": "#/definitions/score01" }
+      }
+    },
+
+    "total_score": { "$ref": "#/definitions/score01" },
+
+    "comparison": {
+      "type": ["object", "null"],
+      "description": "Only present when a baseline counterpart exists for this coordinate",
+      "properties": {
+        "baseline_query_id": { "type": ["integer", "null"] },
+        "baseline_score":    { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "mcp_score":         { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "improvement_pct":   { "type": ["number", "null"] },
+        "winner":            { "type": "string", "enum": ["baseline", "mcp", "tie"] }
+      }
+    },
+
+    "flags": {
+      "type": "object",
+      "required": ["needs_human_review", "is_edge_case"],
+      "properties": {
+        "needs_human_review": { "type": "boolean" },
+        "is_edge_case":       { "type": "boolean" },
+        "notes":              { "type": "string" }
+      }
+    }
+  }
+}

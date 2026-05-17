@@ -1,0 +1,88 @@
+{
+  "batch_id": "batch-2026-04-30",
+  "created_at": "2026-04-30T16:00:00",
+  "description": "השוואה baseline vs MCP — 3 קואורדינטות בדיקה",
+
+  "summary": {
+    "total_evaluations": 6,
+    "avg_baseline_score": 0.34,
+    "avg_mcp_score":      0.91,
+    "avg_improvement_pct": 167.6,
+    "mcp_wins":   3,
+    "baseline_wins": 0,
+    "ties":       0
+  },
+
+  "statistics": {
+    "baseline": {
+      "mean":     0.340,
+      "std":      0.051,
+      "variance": 0.0026,
+      "min":      0.30,
+      "max":      0.40,
+      "ci_95":    [0.289, 0.391]
+    },
+    "mcp": {
+      "mean":     0.908,
+      "std":      0.054,
+      "variance": 0.0029,
+      "min":      0.87,
+      "max":      0.975,
+      "ci_95":    [0.854, 0.963]
+    },
+    "significance": {
+      "test":        "Mann-Whitney U (non-parametric, n=3)",
+      "p_value":     0.05,
+      "significant": true,
+      "note":        "n=3 — מדגם קטן. נדרשות לפחות 30 הערכות לתוצאות מהימנות"
+    },
+    "effect_size": {
+      "cohen_d": 12.1,
+      "interpretation": "large"
+    }
+  },
+
+  "leaderboard": [
+    { "scenario": "תל אביב מרכז", "baseline": 0.40, "mcp": 0.975, "delta_pct": 144 },
+    { "scenario": "פתח תקווה",    "baseline": 0.32, "mcp": 0.88,  "delta_pct": 175 },
+    { "scenario": "אזור מבודד",   "baseline": 0.30, "mcp": 0.87,  "delta_pct": 190 }
+  ],
+
+  "dimension_averages": {
+    "location_accuracy":    { "baseline": 0.25, "mcp": 0.95, "delta": 0.70 },
+    "place_names_accuracy": { "baseline": 0.10, "mcp": 0.90, "delta": 0.80 },
+    "groundedness":         { "baseline": 0.20, "mcp": 1.00, "delta": 0.80 },
+    "hallucination":        { "baseline": 0.55, "mcp": 0.92, "delta": 0.37 },
+    "relevance":            { "baseline": 0.70, "mcp": 0.88, "delta": 0.18 },
+    "spatial_awareness":    { "baseline": 0.30, "mcp": 0.85, "delta": 0.55 },
+    "uncertainty_handling": { "baseline": 0.40, "mcp": 0.90, "delta": 0.50 },
+    "granularity":          { "baseline": 0.35, "mcp": 0.88, "delta": 0.53 }
+  },
+
+  "failure_mode_frequency": {
+    "baseline": {
+      "wrong_city":               1,
+      "hallucinated_poi":         2,
+      "tool_not_called":          3,
+      "ignored_uncertainty":      2,
+      "overclaimed_precision":    1
+    },
+    "mcp": {
+      "missing_poi":              1,
+      "tool_called_wrong_params": 0
+    }
+  },
+
+  "worst_cases": [
+    {
+      "query_id": 12,
+      "scenario_type": "baseline",
+      "question": "מה יש כאן?",
+      "failure_modes": ["wrong_city", "hallucinated_poi", "overclaimed_precision"],
+      "issue": "המודל טען שהקואורדינטה בגבול עזה — שגיאה גיאוגרפית של 60 ק\"מ",
+      "score": 0.15
+    }
+  ],
+
+  "evaluations": ["eval-001", "eval-002", "eval-003", "eval-004", "eval-005", "eval-006"]
+}

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>דוח שפיטה — Map Chat</title>
+<style>
+body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:#f0f2f5;color:#333;margin:0;padding:20px;direction:rtl}
+.hdr{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:22px 28px;border-radius:12px;margin-bottom:20px}
+.hdr h1{margin:0 0 8px;font-size:21px}
+.meta{display:flex;gap:16px;font-size:12px;opacity:.88;flex-wrap:wrap;margin-top:6px}
+.meta b{opacity:.75;font-weight:normal}
+.card{background:#fff;border-radius:10px;padding:18px 22px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.card h2{margin:0 0 12px;font-size:15px;color:#444}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f5f5f5;padding:9px 12px;text-align:right;border-bottom:2px solid #e0e0e0;font-weight:600}
+tbody td{padding:8px 12px;border-bottom:1px solid #f0f0f0}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#fafafa}
+a{color:#667eea;text-decoration:none}
+a:hover{text-decoration:underline}
+.pc{background:#fff;border-radius:10px;padding:20px 24px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.pc h2{margin:0 0 4px;font-size:17px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ctag{font-size:12px;font-weight:normal;color:#888;background:#f0f0f0;padding:2px 8px;border-radius:10px}
+.fbadge{color:#fff;padding:4px 12px;border-radius:12px;font-size:14px;font-weight:bold}
+.coords{font-size:11px;color:#aaa;margin-bottom:12px}
+.ans{background:#fafbff;border:1px solid #e8ecf8;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:13px;line-height:1.65}
+.anslbl{font-size:10px;color:#aaa;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.jgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px}
+.jbox{border:1px solid #e0e0e0;border-radius:8px;padding:14px 16px}
+.jbox.gm{border-color:#4285f4;background:#f8fbff}
+.jbox.oa{border-color:#10a37f;background:#f4fff9}
+.jbox h3{margin:0 0 10px;font-size:13px}
+.st td{padding:3px 8px;font-size:12px;border-bottom:none}
+.st tr.tot td{border-top:1px solid #ddd;padding-top:7px;font-weight:bold}
+.issue{font-size:11px;color:#666;margin:3px 0}
+.expl{font-size:12px;color:#666;font-style:italic;border-top:1px solid #eee;padding-top:8px;margin-top:8px}
+.formula{background:#f8f9fa;border-radius:6px;padding:9px 14px;font-size:13px}
+.avgsep td{border-top:2px solid #ccc;background:#f5f5f5;font-weight:bold}
+.runsep{text-align:center;font-size:13px;font-weight:bold;color:#667eea;background:#f0f0ff;border-radius:8px;padding:8px;margin:10px 0}
+.rbadge{display:inline-block;background:#667eea;color:#fff;font-size:10px;padding:1px 7px;border-radius:10px;margin-left:5px;font-weight:normal;vertical-align:middle}
+.noise-box{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px}
+.noise-box h4{margin:0 0 6px;font-size:13px;color:#795548}
+.noise-row{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}
+.noise-chip{background:#fff;border:1px solid #ddd;border-radius:6px;padding:3px 8px;font-size:11px;color:#555}
+@media(max-width:650px){.jgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <h1>📊 דוח שפיטה — Map Chat</h1>
+  <div class="meta">
+    <span><b>תאריך:</b> 2026-05-12 13:22</span>
+    <span><b>שאלה:</b> מה יש כאן תחבורתית?</span>
+    <span><b>מצב:</b> mcp</span>
+    <span><b>כלים:</b> 🏙️ Google Places, 🚌 Transit, 📖 Wikipedia, 🌐 Web | 2 ריצות לניתוח נויז</span>
+  </div>
+</div>
+<div class="card">
+  <h2>📋 סיכום — 3 מקומות (ממוצע ריצות)</h2>
+  <table>
+    <thead><tr><th>#</th><th>מקום</th><th>עיר</th>
+      <th>TransportScore±טווח<br><small style="font-weight:normal">Gemini /100</small></th>
+      <th>LanguageScore±טווח<br><small style="font-weight:normal">OpenAI /100</small></th>
+      <th>FinalScore±טווח</th></tr></thead>
+    <tbody><tr><td>1</td><td><a href="#p1">מרכז עזריאלי / צומת השלום</a></td><td>תל אביב</td><td style="color:#28a745;font-weight:bold">100.0 <small style="color:#999">±0</small></td><td style="color:#ffc107;font-weight:bold">77.0 <small style="color:#999">±0</small></td><td style="color:#28a745;font-weight:bold;font-size:1.1em">93.1 <small style="color:#999">±0.0</small></td></tr>
+<tr><td>3</td><td><a href="#p3">כיכר רבין</a></td><td>תל אביב</td><td style="color:#fd7e14;font-weight:bold">46.5 <small style="color:#999">±17</small></td><td style="color:#ffc107;font-weight:bold">78.5 <small style="color:#999">±3</small></td><td style="color:#fd7e14;font-weight:bold;font-size:1.1em">56.1 <small style="color:#999">±11.0</small></td></tr>
+<tr><td>14</td><td><a href="#p14">מתחם הבורסה</a></td><td>רמת גן</td><td style="color:#ffc107;font-weight:bold">60.0 <small style="color:#999">±0</small></td><td style="color:#ffc107;font-weight:bold">77.5 <small style="color:#999">±1</small></td><td style="color:#ffc107;font-weight:bold;font-size:1.1em">65.2 <small style="color:#999">±0.3</small></td></tr>
+<tr class="avgsep"><td colspan="3">ממוצע (3 מקומות × 2 ריצות)</td><td style="color:#ffc107">68.8</td><td style="color:#ffc107">77.7</td><td style="color:#ffc107;font-size:1.1em">71.5</td></tr>
+</tbody>
+  </table>
+</div>
+
+<div class="pc" id="p1">
+  <h2>1. מרכז עזריאלי / צומת השלום <span class="ctag">תל אביב</span>
+    <span class="fbadge" style="background:#28a745">93.1</span></h2>
+  <div class="coords">📍 32.07473, 34.79186</div>
+  
+<div class="noise-box">
+  <h4>📊 ניתוח נויז (2 ריצות)</h4>
+  <div class="noise-row"><span class="noise-chip" style="color:#28a745">ריצה 1: 93.1</span> <span class="noise-chip" style="color:#28a745">ריצה 2: 93.1</span></div>
+  <div style="font-size:11px;color:#666;margin-top:6px">
+    FinalScore — ממוצע: <b>93.1</b> &nbsp;|&nbsp;
+    טווח: <b>0.0</b> &nbsp;|&nbsp;
+    סטיית תקן: <b>0.0</b>
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    Transport avg: <b>100.0</b> טווח: <b>0</b>
+    &nbsp;|&nbsp;
+    Language avg: <b>77.0</b> טווח: <b>0</b>
+  </div>
+</div><div class="runsep">ריצה 1</div>
+<div class="jgrid" style="margin-bottom:12px">
+  <div class="jbox gm">
+    <h3>🔵 Gemini — תחבורה <span class="rbadge">ריצה 1</span></h3>
+    <table class="st">
+      <tr><td>Factuality</td><td>/40</td><td style="color:#28a745;font-weight:bold">40</td></tr>
+      <tr><td>Transport Coverage</td><td>/30</td><td style="color:#28a745;font-weight:bold">30</td></tr>
+      <tr><td>Distance Accuracy</td><td>/20</td><td style="color:#28a745;font-weight:bold">20</td></tr>
+      <tr><td>Hallucination Control</td><td>/10</td><td style="color:#28a745;font-weight:bold">10</td></tr>
+      <tr class="tot"><td colspan="2">TransportScore</td><td style="color:#28a745;font-size:1.15em">100/100</td></tr>
+    </table>
+    <div class="expl">💬 The paragraph accurately describes all major nearby transportation infrastructure, including bus stops, heavy rail, and light rail stations, with precise distances and correct transport modes. There are no hallucinations or factual errors regarding transport. The mention of bus stops near Kiryat Hamemshala is generally true for the broader area and acknowledges they are further away.</div>
+  </div>
+  <div class="jbox oa">
+    <h3>🟢 OpenAI — שפה <span class="rbadge">ריצה 1</span></h3>
+    <table class="st">
+      <tr><td>Clarity</td><td>/35</td><td style="color:#28a745;font-weight:bold">30</td></tr>
+      <tr><td>Conciseness</td><td>/25</td><td style="color:#ffc107;font-weight:bold">15</td></tr>
+      <tr><td>Relevance</td><td>/25</td><td style="color:#28a745;font-weight:bold">20</td></tr>
+      <tr><td>User Usefulness</td><td>/15</td><td style="color:#28a745;font-weight:bold">12</td></tr>
+      <tr class="tot"><td colspan="2">LanguageScore</td><td style="color:#ffc107;font-size:1.15em">77/100</td></tr>
+    </table>
+    <div class="issue"><strong>📝 ורבוזיות:</strong> Explanation of the historical name change of the street is unnecessary., Details about additional bus stations further away are not fully relevant.</div><div class="issue"><strong>🔍 מידע לא רלוונטי:</strong> Historical context about the street name.</div><div class="expl">💬 The paragraph is generally clear and informative regarding transit options, but it includes unnecessary historical details and could be more concise.</div>
+  </div>
+</div>
+<div class="ans" style="margin-bottom:8px">
+  <div class="anslbl">תשובה (מה יש כאן תחבורתית?)</div>
+  הנקודה שהוצבתם נמצאת על דרך מנחם בגין בתל אביב-יפו, אחת מהדרכים הראשיות של העיר, בקרבת קניון עזריאלי (כ-12 מטרים משם) ומרכז העסקים עזריאלי. מהבחינה תחבורתית, זו אזור עם אפשרויות תחבורה ענפות וקיימות: קרוב מאוד יש עמדות אוטובוס ברחוב דרך מנחם בגין ליד הקניון בעלות המרחקים של כ-81 עד 124 מטרים, תחנת רכבת השלום (של הרכבת הישראלית) המרוחקת כ-188 מטרים, וגם תחנת הרכבת הקלה שאול המלך באזור בהמרחק של כ-216 מטרים. בנוסף יש מספר תחנות אוטובוס נוספות בקרבת קניון עזריאלי וכביש 20, וגם תחנות אוטובוס ליד קרית הממשלה יותר רחוק מכאן. דרך מנחם בגין, שנקראה עד לשנת 2001 דרך פתח תקווה, היא דרך ראשית בעיר תל אביב על שם ראש ממשלת ישראל מנחם בגין.
+</div>
+<div class="formula">FinalScore = 0.7 × 100 + 0.3 × 77 = <strong style="color:#28a745;font-size:1.1em">93.1</strong></div>
+<div class="runsep">ריצה 2</div>
+<div class="jgrid" style="margin-bottom:12px">
+  <div class="jbox gm">
+    <h3>🔵 Gemini — תחבורה <span class="rbadge">ריצה 2</span></h3>
+    <table class="st">
+      <tr><td>Factuality</td><td>/40</td><td style="color:#28a745;font-weight:bold">40</td></tr>
+      <tr><td>Transport Coverage</td><td>/30</td><td style="color:#28a745;font-weight:bold">30</td></tr>
+      <tr><td>Distance Accuracy</td><td>/20</td><td style="color:#28a745;font-weight:bold">20</td></tr>
+      <tr><td>Hallucination Control</td><td>/10</td><td style="color:#28a745;font-weight:bold">10</td></tr>
+      <tr class="tot"><td colspan="2">TransportScore</td><td style="color:#28a745;font-size:1.15em">100/100</td></tr>
+    </table>
+    <div class="expl">💬 The paragraph accurately describes all major nearby transportation assets, modes, and distances according to the provided ground truth. There are no factual errors, hallucinations, or misleading claims regarding transportation infrastructure.</div>
+  </div>
+  <div class="jbox oa">
+    <h3>🟢 OpenAI — שפה <span class="rbadge">ריצה 2</span></h3>
+    <table class="st">
+      <tr><td>Clarity</td><td>/35</td><td style="color:#28a745;font-weight:bold">30</td></tr>
+      <tr><td>Conciseness</td><td>/25</td><td style="color:#ffc107;font-weight:bold">15</td></tr>
+      <tr><td>Relevance</td><td>/25</td><td style="color:#28a745;font-weight:bold">20</td></tr>
+      <tr><td>User Usefulness</td><td>/15</td><td style="color:#28a745;font-weight:bold">12</td></tr>
+      <tr class="tot"><td colspan="2">LanguageScore</td><td style="color:#ffc107;font-size:1.15em">77/100</td></tr>
+    </table>
+    <div class="issue"><strong>📝 ורבוזיות:</strong> The explanation of distances could be simplified., Mentioning the historical change of the street name is unnecessary.</div><div class="issue"><strong>🔍 מידע לא רלוונטי:</strong> Historical fact about the street name change in 2001.</div><div class="expl">💬 The paragraph provides useful information about transportation options near the coordinates but includes excessive detail and irrelevant historical context that detracts from clarity and conciseness.</div>
+  </div>
+</div>
+<div class="ans" style="margin-bottom:8px">
+  <div class="anslbl">תשובה (מה יש כאן תחבורתית?)</div>
+  דרך מנחם בגין בתל אביב-יפו, הדרך הראשית בעיר, ממוקמת באזור עשיר בתחבורה ציבורית וחיבורים קומפלקסיים. בקרבת מקום מצויים תחנות אוטובוס מרובות בקניון עזריאלי ודרך מנחם בגין עצמה (במרחק של כ-81 עד 124 מטרים), תחנת הרכבת השלום (במרחק של כ-188 מטרים) המשמשת כחוד החנית של תחבורה רכבתית בעיר, תחנת הרכבת הקלה שאול המלך (במרחק של כ-216 מטרים), וכן תחנות אוטובוס נוספות ותחנות הסעות ציבוריות. בנוסף, קניון עזריאלי הגדול בעיר נמצא במרחק של כ-12 מטרים, מה שהופך את האזור לצומת תחבורתי משמעותי. דרך מנחם בגין היא דרך ראשית בעיר תל אביב ששונה שמה בשנת 2001.
+</div>
+<div class="formula">FinalScore = 0.7 × 100 + 0.3 × 77 = <strong style="color:#28a745;font-size:1.1em">93.1</strong></div>
+
+</div>
+
+<div class="pc" id="p3">
+  <h2>3. כיכר רבין <span class="ctag">תל אביב</span>
+    <span class="fbadge" style="background:#fd7e14">56.1</span></h2>
+  <div class="coords">📍 32.08055, 34.78057</div>
+  
+<div class="noise-box">
+  <h4>📊 ניתוח נויז (2 ריצות)</h4>
+  <div class="noise-row"><span class="noise-chip" style="color:#fd7e14">ריצה 1: 50.6</span> <span class="noise-chip" style="color:#ffc107">ריצה 2: 61.6</span></div>
+  <div style="font-size:11px;color:#666;margin-top:6px">
+    FinalScore — ממוצע: <b>56.1</b> &nbsp;|&nbsp;
+    טווח: <b>11.0</b> &nbsp;|&nbsp;
+    סטיית תקן: <b>7.8</b>
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    Transport avg: <b>46.5</b> טווח: <b>17</b>
+    &nbsp;|&nbsp;
+    Language avg: <b>78.5</b> טווח: <b>3</b>
+  </div>
+</div><div class="runsep">ריצה 1</div>
+<div class="jgrid" style="margin-bottom:12px">
+  <div class="jbox gm">
+    <h3>🔵 Gemini — תחבורה <span class="rbadge">ריצה 1</span></h3>
+    <table class="st">
+      <tr><td>Factuality</td><td>/40</td><td style="color:#dc3545;font-weight:bold">5</td></tr>
+      <tr><td>Transport Coverage</td><td>/30</td><td style="color:#ffc107;font-weight:bold">18</td></tr>
+      <tr><td>Distance Accuracy</td><td>/20</td><td style="color:#ffc107;font-weight:bold">15</td></tr>
+      <tr><td>Hallucination Control</td><td>/10</td><td style="color:#dc3545;font-weight:bold">0</td></tr>
+      <tr class="tot"><td colspan="2">TransportScore</td><td style="color:#dc3545;font-size:1.15em">38/100</td></tr>
+    </table>
+    <div class="issue"><strong>🔴 ישויות מומצאות:</strong> רחוב הירקון (as the location of the coordinates), דיזנגוף/שץ (as a bus stop within 469-702 meters from the coordinates), בודלק דו (unintelligible term used to describe bus lines)</div><div class="issue"><strong>⚠️ טענות שגויות:</strong> The location of the coordinates is on HaYarkon Street., The bus stop &quot;דיזנגוף/שץ&quot; is located within 469-702 meters from the coordinates., Bus lines have &quot;בודלק דו&quot; links.</div><div class="expl">💬 The paragraph accurately identifies several key bus stops and their distances around Rabin Square and Dizengoff Square. However, it contains significant factual errors regarding the precise location of the coordinates (incorrectly stating HaYarkon Street), hallucinates a bus stop (&quot;דיזנגוף/שץ&quot;) within an inaccurate distance range, and includes unintelligible text (&quot;בודלק דו&quot;) related to bus lines. These errors severely impact its factuality and hallucination control, despite good coverage of existing bus stops.</div>
+  </div>
+  <div class="jbox oa">
+    <h3>🟢 OpenAI — שפה <span class="rbadge">ריצה 1</span></h3>
+    <table class="st">
+      <tr><td>Clarity</td><td>/35</td><td style="color:#28a745;font-weight:bold">28</td></tr>
+      <tr><td>Conciseness</td><td>/25</td><td style="color:#ffc107;font-weight:bold">18</td></tr>
+      <tr><td>Relevance</td><td>/25</td><td style="color:#28a745;font-weight:bold">22</td></tr>
+      <tr><td>User Usefulness</td><td>/15</td><td style="color:#28a745;font-weight:bold">12</td></tr>
+      <tr class="tot"><td colspan="2">LanguageScore</td><td style="color:#28a745;font-size:1.15em">80/100</td></tr>
+    </table>
+    <div class="issue"><strong>📝 ורבוזיות:</strong> The mention of multiple bus stations could be simplified to improve clarity., The distances provided could be more clearly stated or summarized.</div><div class="issue"><strong>🔍 מידע לא רלוונטי:</strong> References to municipal buildings (e.g., City Hall) without direct relevance to transportation.</div><div class="expl">💬 The paragraph contains useful information about transportation but is somewhat verbose and includes irrelevant details. It could be more concise and clear for better user understanding.</div>
+  </div>
+</div>
+<div class="ans" style="margin-bottom:8px">
+  <div class="anslbl">תשובה (מה יש כאן תחבורתית?)</div>
+  מיקומך נמצא ברחוב הירקון בתל אביב-יפו, בסמוך מאוד לכיכר רבין אחד מהממשקים התחבורתיים החשובים בעיר. לגבי אפשרויות הנסיעה בתחום, קיימת תחנת אוטובוס בכיכר רבין/מלכי ישראל במרחק של כ-111 מטרים, וגם תחנה נוספת בכיכר רבין/אבן גבירול במרחק של כ-207 מטרים. דלך זה יש גישה לכיכר דיזנגוף הסמוכה אליו, שבה נמצאים תחנות אוטובוס בתחום 563-657 מטרים מהמיקום, וכן תחנות נוספות בסביבה כמו ריינס/גורדון, אבן גבירול/ארלוזורוב ודיזנגוף/שץ בטווח של 469-702 מטרים. האזור מהווה חלק מהמרכז התחבורתי של תל אביב, עם קישורים רבים לקווי אוטובוס בודלק דו היוצאים לכיוונים שונים בעיר. בית עיריית תל אביב-יפו נמצא בתוך כיכר רבין עצמה, היוצרת את הדופן הראשית שלה.
+</div>
+<div class="formula">FinalScore = 0.7 × 38 + 0.3 × 80 = <strong style="color:#fd7e14;font-size:1.1em">50.6</strong></div>
+<div class="runsep">ריצה 2</div>
+<div class="jgrid" style="margin-bottom:12px">
+  <div class="jbox gm">
+    <h3>🔵 Gemini — תחבורה <span class="rbadge">ריצה 2</span></h3>
+    <table class="st">
+      <tr><td>Factuality</td><td>/40</td><td style="color:#fd7e14;font-weight:bold">20</td></tr>
+      <tr><td>Transport Coverage</td><td>/30</td><td style="color:#fd7e14;font-weight:bold">12</td></tr>
+      <tr><td>Distance Accuracy</td><td>/20</td><td style="color:#28a745;font-weight:bold">20</td></tr>
+      <tr><td>Hallucination Control</td><td>/10</td><td style="color:#dc3545;font-weight:bold">3</td></tr>
+      <tr class="tot"><td colspan="2">TransportScore</td><td style="color:#fd7e14;font-size:1.15em">55/100</td></tr>
+    </table>
+    <div class="issue"><strong>🟡 נכסים חסרים:</strong> ריינס/גורדון (bus_stop, ~469m), אבן גבירול/ארלוזורוב (bus_stop, ~491m), לונדון מיניסטור/שד&#x27; שאול המלך (bus_stop, ~590m), שד&#x27; בן גוריון/דיזנגוף (bus_stop, ~657m), כיכר דיזנגוף/דיזנגוף (bus_station, ~657m)</div><div class="issue"><strong>⚠️ טענות שגויות:</strong> הנקודה ממוקמת ברחוב הירקון בתל אביב-יפו (The point is located on Hayarkon Street)., במרחק קצר יותר של 207 מטרים אפשר להגיע לתחנת &quot;כיכר רבין/אבן גבירול&quot; (At a shorter distance of 207 meters one can reach the &quot;Rabin Square/Ibn Gvirol&quot; station).</div><div class="expl">💬 The paragraph accurately states the distances to the mentioned bus stops and Rabin Square. However, it contains a significant factual error by incorrectly placing the coordinates on Hayarkon Street, and it makes an incorrect distance comparison. Additionally, it provides partial coverage of nearby transport infrastructure, omitting several other bus stops within walking distance.</div>
+  </div>
+  <div class="jbox oa">
+    <h3>🟢 OpenAI — שפה <span class="rbadge">ריצה 2</span></h3>
+    <table class="st">
+      <tr><td>Clarity</td><td>/35</td><td style="color:#28a745;font-weight:bold">30</td></tr>
+      <tr><td>Conciseness</td><td>/25</td><td style="color:#ffc107;font-weight:bold">15</td></tr>
+      <tr><td>Relevance</td><td>/25</td><td style="color:#28a745;font-weight:bold">20</td></tr>
+      <tr><td>User Usefulness</td><td>/15</td><td style="color:#28a745;font-weight:bold">12</td></tr>
+      <tr class="tot"><td colspan="2">LanguageScore</td><td style="color:#ffc107;font-size:1.15em">77/100</td></tr>
+    </table>
+    <div class="issue"><strong>📝 ורבוזיות:</strong> The paragraph includes excessive details about nearby public facilities that do not directly relate to transportation.</div><div class="issue"><strong>🔍 מידע לא רלוונטי:</strong> Descriptions of cultural or historical sites like the city hall and the cultural center are unnecessary for a transportation guide.</div><div class="expl">💬 While the paragraph provides relevant transportation details, it is overly wordy and includes off-topic information that distracts from the main focus.</div>
+  </div>
+</div>
+<div class="ans" style="margin-bottom:8px">
+  <div class="anslbl">תשובה (מה יש כאן תחבורתית?)</div>
+  הנקודה ממוקמת ברחוב הירקון בתל אביב-יפו, באזור מרכזי ביותר של העיר הקרוב לכיכר רבין שנמצאת במרחק של כ-13 מטרים בלבד. בתחבורה ציבורית, השטח זה מוגדר היטב עם תחנת אוטובוס &quot;כיכר רבין/מלכי ישראל&quot; במרחק של 111 מטרים, ובמרחק קצר יותר של 207 מטרים אפשר להגיע לתחנת &quot;כיכר רבין/אבן גבירול&quot;. בקרבת מקום יש גם תחנת אוטובוס &quot;כיכר דיזנגוף/ריינס&quot; שהיא תחנת אוטובוס מרכזית יותר, במרחק של כ-563 מטרים, והיא משמשת כנקודת הצטברות למספר קווים חשובים בעיר. בנוסף לתחבורה ציבורית, האזור עשיר במתקנים עירוניים משמעותיים כמו בית העיריות של תל אביב בכיכר רבין, מרכז התרבות ענב ומתחם גן העיר הסמוך. בית עיריית תל אביב-יפו המצוי בכיכר רבין יוצר את הדופן הראשית של הכיכר ומהווה אתר ציבורי חשוב במרכז העיר.
+</div>
+<div class="formula">FinalScore = 0.7 × 55 + 0.3 × 77 = <strong style="color:#ffc107;font-size:1.1em">61.6</strong></div>
+
+</div>
+
+<div class="pc" id="p14">
+  <h2>14. מתחם הבורסה <span class="ctag">רמת גן</span>
+    <span class="fbadge" style="background:#ffc107">65.2</span></h2>
+  <div class="coords">📍 32.08390, 34.80080</div>
+  
+<div class="noise-box">
+  <h4>📊 ניתוח נויז (2 ריצות)</h4>
+  <div class="noise-row"><span class="noise-chip" style="color:#ffc107">ריצה 1: 65.4</span> <span class="noise-chip" style="color:#ffc107">ריצה 2: 65.1</span></div>
+  <div style="font-size:11px;color:#666;margin-top:6px">
+    FinalScore — ממוצע: <b>65.2</b> &nbsp;|&nbsp;
+    טווח: <b>0.3</b> &nbsp;|&nbsp;
+    סטיית תקן: <b>0.2</b>
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    Transport avg: <b>60.0</b> טווח: <b>0</b>
+    &nbsp;|&nbsp;
+    Language avg: <b>77.5</b> טווח: <b>1</b>
+  </div>
+</div><div class="runsep">ריצה 1</div>
+<div class="jgrid" style="margin-bottom:12px">
+  <div class="jbox gm">
+    <h3>🔵 Gemini — תחבורה <span class="rbadge">ריצה 1</span></h3>
+    <table class="st">
+      <tr><td>Factuality</td><td>/40</td><td style="color:#dc3545;font-weight:bold">10</td></tr>
+      <tr><td>Transport Coverage</td><td>/30</td><td style="color:#28a745;font-weight:bold">30</td></tr>
+      <tr><td>Distance Accuracy</td><td>/20</td><td style="color:#28a745;font-weight:bold">20</td></tr>
+      <tr><td>Hallucination Control</td><td>/10</td><td style="color:#dc3545;font-weight:bold">0</td></tr>
+      <tr class="tot"><td colspan="2">TransportScore</td><td style="color:#ffc107;font-size:1.15em">60/100</td></tr>
+    </table>
+    <div class="issue"><strong>🔴 ישויות מומצאות:</strong> תחנת מסוקי טקסי ברכבת תל אביב מרכז סבידור</div><div class="issue"><strong>⚠️ טענות שגויות:</strong> The taxi stand at approximately 20 meters is incorrectly described as a &#x27;helicopter taxi station&#x27; (תחנת מסוקי טקסי)., The bus station &#x27;הבורסה/דרך ז&#x27;בוטינסקי&#x27; at approximately 150 meters is misleadingly described as being &#x27;של התחנה המרכזית האוטובוס&#x27; (of the Central Bus Station).</div><div class="expl">💬 The paragraph accurately identifies key transport entities and their distances but contains a significant hallucination by describing a taxi stand as a &#x27;helicopter taxi station&#x27;. It also misleadingly labels a bus station as part of &#x27;the Central Bus Station&#x27;. Despite these errors, it covers the major nearby transport modes and assets.</div>
+  </div>
+  <div class="jbox oa">
+    <h3>🟢 OpenAI — שפה <span class="rbadge">ריצה 1</span></h3>
+    <table class="st">
+      <tr><td>Clarity</td><td>/35</td><td style="color:#28a745;font-weight:bold">28</td></tr>
+      <tr><td>Conciseness</td><td>/25</td><td style="color:#ffc107;font-weight:bold">18</td></tr>
+      <tr><td>Relevance</td><td>/25</td><td style="color:#28a745;font-weight:bold">20</td></tr>
+      <tr><td>User Usefulness</td><td>/15</td><td style="color:#28a745;font-weight:bold">12</td></tr>
+      <tr class="tot"><td colspan="2">LanguageScore</td><td style="color:#ffc107;font-size:1.15em">78/100</td></tr>
+    </table>
+    <div class="issue"><strong>📝 ורבוזיות:</strong> Use of overly complex phrases and additional details that do not contribute to transportation information.</div><div class="issue"><strong>🔍 מידע לא רלוונטי:</strong> Information about שלום זיסמן and his role in local politics is not relevant to transportation needs.</div><div class="expl">💬 While the paragraph provides several relevant transportation options, it is overly verbose and includes unnecessary historical context that detracts from its usefulness.</div>
+  </div>
+</div>
+<div class="ans" style="margin-bottom:8px">
+  <div class="anslbl">תשובה (מה יש כאן תחבורתית?)</div>
+  הנך נמצא ברמת גן ברחוב זיסמן שלום, באזור העשיר בתשתיות תחבורה ציבורית. במרחק קצר מאוד מחום המקום, כחוצה עשרים מטר בלבד, ממצא תחנת מסוקי טקסי ברכבת תל אביב מרכז סבידור, ובמרחק של כ-150 מטר ממצא תחנת הבורסה בדרך ז&#x27;בוטינסקי של התחנה המרכזית האוטובוס. הקרבה המשמעותית ביותר היא לתחנת הרכבת סבידור המרכזית וסבידור סמוך, שנמצאות במרחק של כ-250 מטר מהמקום, ולתחנת הרכבת קו הרכבת הקלה אבא הלל שממצאים במרחק של כ-213 מטר בלבד. בנוסף, ישנו גישה קלה לתחנות אוטובוס נוספות בסביבה הקרובה, כולל תחנות בסמוך לתחנת הרכבת המרכזית. שלום זיסמן, על שמו קרא הרחוב, היה חבר כנסת וממלא מקום ראש עיריית רמת גן.
+</div>
+<div class="formula">FinalScore = 0.7 × 60 + 0.3 × 78 = <strong style="color:#ffc107;font-size:1.1em">65.4</strong></div>
+<div class="runsep">ריצה 2</div>
+<div class="jgrid" style="margin-bottom:12px">
+  <div class="jbox gm">
+    <h3>🔵 Gemini — תחבורה <span class="rbadge">ריצה 2</span></h3>
+    <table class="st">
+      <tr><td>Factuality</td><td>/40</td><td style="color:#dc3545;font-weight:bold">10</td></tr>
+      <tr><td>Transport Coverage</td><td>/30</td><td style="color:#28a745;font-weight:bold">30</td></tr>
+      <tr><td>Distance Accuracy</td><td>/20</td><td style="color:#28a745;font-weight:bold">20</td></tr>
+      <tr><td>Hallucination Control</td><td>/10</td><td style="color:#dc3545;font-weight:bold">0</td></tr>
+      <tr class="tot"><td colspan="2">TransportScore</td><td style="color:#ffc107;font-size:1.15em">60/100</td></tr>
+    </table>
+    <div class="issue"><strong>🔴 ישויות מומצאות:</strong> תחנת הרכבת תל אביב אבא הלל</div><div class="issue"><strong>⚠️ טענות שגויות:</strong> The paragraph refers to &#x27;תחנת הרכבת תל אביב אבא הלל&#x27;, implying a heavy rail station, when the ground truth indicates a light rail station (&#x27;אבא הלל (light_rail_station)&#x27;) and a bus stop (&#x27;ת.רק&#x27;&#x27;ל אבא הלל&#x27;). The location &#x27;תל אביב&#x27; is also incorrect for the light rail station which is in Ramat Gan., The statement &#x27;התחנה המרכזית של סבידור משמשת קשר חשוב בין הרכבת הקלה למערכת הרכבת המסורתית&#x27; (Savidor Central Station serves as an important link between the light rail and the traditional rail system) is misleading. While both are nearby, there isn&#x27;t a direct integrated &#x27;connection&#x27; or interchange within the Savidor heavy rail station for the light rail., The area description as &#x27;בדרום תל אביב&#x27; (south Tel Aviv) is geographically inaccurate; the location is closer to central Tel Aviv and the border with Ramat Gan.</div><div class="expl">💬 The paragraph accurately identifies nearby taxi, bus, and heavy rail stations with correct distances. However, it significantly errs by describing the Abba Hillel light rail station as a heavy rail station (&#x27;תחנת הרכבת&#x27;) and misstates its location as Tel Aviv. It also exaggerates the direct connectivity between the light rail and heavy rail at Savidor, and mischaracterizes the general area&#x27;s geography.</div>
+  </div>
+  <div class="jbox oa">
+    <h3>🟢 OpenAI — שפה <span class="rbadge">ריצה 2</span></h3>
+    <table class="st">
+      <tr><td>Clarity</td><td>/35</td><td style="color:#28a745;font-weight:bold">30</td></tr>
+      <tr><td>Conciseness</td><td>/25</td><td style="color:#ffc107;font-weight:bold">15</td></tr>
+      <tr><td>Relevance</td><td>/25</td><td style="color:#28a745;font-weight:bold">20</td></tr>
+      <tr><td>User Usefulness</td><td>/15</td><td style="color:#28a745;font-weight:bold">12</td></tr>
+      <tr class="tot"><td colspan="2">LanguageScore</td><td style="color:#ffc107;font-size:1.15em">77/100</td></tr>
+    </table>
+    <div class="issue"><strong>📝 ורבוזיות:</strong> Introduction about the area is slightly verbose., Mention of historical figure is unnecessary.</div><div class="issue"><strong>🔍 מידע לא רלוונטי:</strong> Historical information about שלום זיסמן.</div><div class="expl">💬 The paragraph provides useful transportation information but includes unnecessary details and historical context that detract from clarity and conciseness.</div>
+  </div>
+</div>
+<div class="ans" style="margin-bottom:8px">
+  <div class="anslbl">תשובה (מה יש כאן תחבורתית?)</div>
+  רחוב זיסמן שלום ברמת גן נמצא באזור עשיר בתחבורה ציבורית, עם קרבה יוצאת דופן לתשתיות הובלה. במרחק זעום של כ-20 מטרים מהموקד קיימת עמדת מוניות ליד בורסת היהלומים, ובערך 150 מטרים משם נמצאת תחנת אוטובוסים בשם &quot;הבורסה/דרך ז&#x27;בוטינסקי&quot;. במרחק של כ-250 מטרים ממקום זה פועלת תחנת הרכבת תל אביב סבידור, אחד מרכזי התחבורה המרכזיים בגזרה, וגם תחנת הרכבת תל אביב אבא הלל במרחק דומה. התחנה המרכזית של סבידור משמשת קשר חשוב בין הרכבת הקלה למערכת הרכבת המסורתית. השטח מחובר גם באוטובוסים נוספים בקרוב, מה שהופך אותו לנקודת חיבור משמעותית בדרום תל אביב וצפון רמת גן. שלום זיסמן, על שמו נקרא הרחוב, היה יושב ראש הוועד האולימפי בישראל וגם ממלא מקום ראש עיריית רמת גן.
+</div>
+<div class="formula">FinalScore = 0.7 × 60 + 0.3 × 77 = <strong style="color:#ffc107;font-size:1.1em">65.1</strong></div>
+
+</div>
+
+</body>
+</html>

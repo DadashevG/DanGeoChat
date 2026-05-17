@@ -35,6 +35,14 @@ logs/
 # Evaluation files (add manually after Dropbox sync)
 evaluation/
 
+# GNN training data (large files — download separately)
+אימון GNN/data/
+אימון GNN/cache/
+
+# Word document drafts
+*.docx
+~$*.docx
+
 # OS
 .DS_Store
 Thumbs.db

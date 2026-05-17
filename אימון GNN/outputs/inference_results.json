@@ -1,0 +1,104 @@
+[
+  {
+    "lat": 32.0743,
+    "lon": 34.7925,
+    "nearest_osm_node": 4416355537,
+    "subgraph_nodes": 39,
+    "connectivity_level": "high",
+    "public_transport_level": "rich",
+    "network_role": "metropolitan_hub",
+    "evidence": {
+      "major_intersections_count": 30,
+      "bus_stop_count": 512,
+      "light_rail_stop_count": 28,
+      "train_stop_count": 39,
+      "unique_gtfs_routes_count": 34989
+    },
+    "name": "Azrieli Center"
+  },
+  {
+    "lat": 32.079,
+    "lon": 34.7742,
+    "nearest_osm_node": 412519847,
+    "subgraph_nodes": 32,
+    "connectivity_level": "medium",
+    "public_transport_level": "moderate",
+    "network_role": "transit_served",
+    "evidence": {
+      "major_intersections_count": 14,
+      "bus_stop_count": 370,
+      "light_rail_stop_count": 0,
+      "train_stop_count": 0,
+      "unique_gtfs_routes_count": 1551
+    },
+    "name": "Dizengoff Square"
+  },
+  {
+    "lat": 32.1133,
+    "lon": 34.8044,
+    "nearest_osm_node": 11501428173,
+    "subgraph_nodes": 9,
+    "connectivity_level": "medium",
+    "public_transport_level": "poor",
+    "network_role": "transit_served",
+    "evidence": {
+      "major_intersections_count": 7,
+      "bus_stop_count": 95,
+      "light_rail_stop_count": 0,
+      "train_stop_count": 0,
+      "unique_gtfs_routes_count": 516
+    },
+    "name": "Tel Aviv University"
+  },
+  {
+    "lat": 32.0519,
+    "lon": 34.7503,
+    "nearest_osm_node": 1198023631,
+    "subgraph_nodes": 23,
+    "connectivity_level": "low",
+    "public_transport_level": "moderate",
+    "network_role": "residential",
+    "evidence": {
+      "major_intersections_count": 4,
+      "bus_stop_count": 249,
+      "light_rail_stop_count": 0,
+      "train_stop_count": 0,
+      "unique_gtfs_routes_count": 322
+    },
+    "name": "Jaffa Port"
+  },
+  {
+    "lat": 32.0804,
+    "lon": 34.7812,
+    "nearest_osm_node": 284880414,
+    "subgraph_nodes": 42,
+    "connectivity_level": "high",
+    "public_transport_level": "rich",
+    "network_role": "metropolitan_hub",
+    "evidence": {
+      "major_intersections_count": 35,
+      "bus_stop_count": 756,
+      "light_rail_stop_count": 0,
+      "train_stop_count": 0,
+      "unique_gtfs_routes_count": 3142
+    },
+    "name": "Rabin Square"
+  },
+  {
+    "lat": 32.0499,
+    "lon": 34.7698,
+    "nearest_osm_node": 540432924,
+    "subgraph_nodes": 34,
+    "connectivity_level": "high",
+    "public_transport_level": "moderate",
+    "network_role": "local_hub",
+    "evidence": {
+      "major_intersections_count": 22,
+      "bus_stop_count": 480,
+      "light_rail_stop_count": 0,
+      "train_stop_count": 0,
+      "unique_gtfs_routes_count": 1623
+    },
+    "name": "HaHagana Station"
+  }
+]

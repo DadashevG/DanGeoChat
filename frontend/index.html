@@ -384,6 +384,83 @@
         .msg-badge img { height: 11px; vertical-align: middle; }
         .msg-badge .sep { color: #c0a8e8; }
 
+        /* ── Toolbar row ─────────────────────────────── */
+        .toolbar-row {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+            flex-wrap: nowrap;
+        }
+        .toolbar-row .btn {
+            flex: 1;
+            padding: 8px 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            min-width: 0;
+        }
+
+        /* ── GNN Button + Panel ─────────────────────── */
+        .btn-gnn {
+            background: #6f42c1;
+            color: white;
+            border: none;
+        }
+        .btn-gnn:hover:not(:disabled) { background: #5a32a3; }
+        .btn-gnn.active {
+            background: #4a1fa0;
+            box-shadow: 0 0 0 3px rgba(111,66,193,0.35);
+        }
+        .btn-gnn:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+
+        .gnn-panel {
+            display: none;
+            background: #f5f0ff;
+            border: 1px solid #c8b4f0;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            animation: fadeIn 0.2s ease;
+        }
+        .gnn-panel.open { display: block; }
+
+        .gnn-panel-header {
+            font-size: 12px;
+            font-weight: bold;
+            color: #5a32a3;
+            margin-bottom: 8px;
+        }
+        .gnn-options-row {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+        }
+        .gnn-option-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .gnn-option-item input { cursor: pointer; accent-color: #6f42c1; }
+        .gnn-model-note {
+            margin-top: 7px;
+            font-size: 10px;
+            color: #7c5cbf;
+        }
+
+        .gnn-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 8px;
+            padding: 3px 8px;
+            background: #f0ebff;
+            border: 1px solid #c8b4f0;
+            border-radius: 20px;
+            font-size: 10px;
+            color: #5a32a3;
+            font-weight: 500;
+        }
+
         /* ── Exam Modal ─────────────────────────────── */
         .btn-exam {
             background: #fd7e14;
@@ -728,16 +805,27 @@
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <button class="btn btn-mcp" onclick="toggleMcpPanel()" id="mcpBtn">
-                        🧰 MCP
-                    </button>
-                    <button class="btn btn-toggle" onclick="toggleWebSearch()" id="webToggleBtn">
-                        אינטרנט: OFF
-                    </button>
-                    <button class="btn btn-exam" onclick="openExamModal()">
-                        🧪 בדיקה
-                    </button>
+                <!-- GNN Panel -->
+                <div class="gnn-panel" id="gnnPanel">
+                    <div class="gnn-panel-header">🧠 ניתוח GNN — תל אביב-יפו</div>
+                    <div class="gnn-options-row">
+                        <label class="gnn-option-item">
+                            <input type="radio" name="gnnOption" value="gnn" checked> GNN בלבד
+                        </label>
+                        <label class="gnn-option-item">
+                            <input type="radio" name="gnnOption" value="gnn_wiki"> GNN + Wikipedia
+                        </label>
+                        <label class="gnn-option-item">
+                            <input type="radio" name="gnnOption" value="gnn_mcp"> GNN + כל הכלים
+                        </label>
+                    </div>
+                </div>
+
+                <div class="toolbar-row">
+                    <button class="btn btn-mcp" onclick="toggleMcpPanel()" id="mcpBtn">🧰 MCP</button>
+                    <button class="btn btn-gnn" onclick="toggleGnnPanel()" id="gnnBtn" disabled title="בחר נקודה בתל אביב-יפו">🧠 GNN</button>
+                    <button class="btn btn-toggle" onclick="toggleWebSearch()" id="webToggleBtn">🌐 OFF</button>
+                    <button class="btn btn-exam" onclick="openExamModal()">🧪 בדיקה</button>
                 </div>
 
                 <div style="display:flex; gap:8px;">
@@ -806,6 +894,20 @@
                     </div>
                 </div>
 
+                <div class="exam-tools-section" style="margin-top:6px">
+                    <div class="exam-section-title"><span>🧠 GNN:</span></div>
+                    <div class="exam-tools-row">
+                        <label class="exam-tool-item">
+                            <input type="radio" name="examGnnMode" value="none" checked> ללא GNN
+                        </label>
+                        <label class="exam-tool-item">
+                            <input type="radio" name="examGnnMode" value="gnn"> GNN בלבד
+                        </label>
+                        <label class="exam-tool-item">
+                            <input type="radio" name="examGnnMode" value="gnn_mcp"> GNN + כל הכלים
+                        </label>
+                    </div>
+                </div>
                 <div class="exam-controls-row">
                     <label class="exam-question-label">שאלה:</label>
                     <select class="exam-question-select" id="examQuestion">
@@ -849,6 +951,56 @@
         let useMockData = true;
         let useWebSearch = false;
         let useMcpMode = false;
+        let useGnnMode = false;
+
+        // Tel Aviv-Yafo trained bounding box
+        const GNN_BOUNDS = { latMin: 31.99, latMax: 32.16, lonMin: 34.73, lonMax: 34.87 };
+
+        function isInGnnArea(lat, lon) {
+            return lat >= GNN_BOUNDS.latMin && lat <= GNN_BOUNDS.latMax &&
+                   lon >= GNN_BOUNDS.lonMin && lon <= GNN_BOUNDS.lonMax;
+        }
+
+        function updateGnnButton() {
+            const btn = document.getElementById('gnnBtn');
+            if (!selectedLocation || !isInGnnArea(selectedLocation.lat, selectedLocation.lon)) {
+                btn.disabled = true;
+                btn.title = 'בחר נקודה בתל אביב-יפו להפעלה';
+                if (useGnnMode) { useGnnMode = false; btn.classList.remove('active'); updateToggleUI(); }
+            } else {
+                btn.disabled = false;
+                btn.title = 'הפעל ניתוח GNN לנקודה זו';
+            }
+        }
+
+        function toggleGnnPanel() {
+            const panel = document.getElementById('gnnPanel');
+            const isOpening = !panel.classList.contains('open');
+            panel.classList.toggle('open', isOpening);
+            useGnnMode = isOpening;
+            document.getElementById('gnnBtn').classList.toggle('active', useGnnMode);
+            if (useGnnMode) {
+                // GNN is exclusive — close MCP panel and clear web search
+                useMcpMode = false;
+                useWebSearch = false;
+                document.querySelectorAll('#mcpPanel input[type="checkbox"]').forEach(cb => cb.checked = false);
+                document.getElementById('mcpPanel').classList.remove('open');
+                document.getElementById('mcpBtn').classList.remove('active');
+            }
+            updateToggleUI();
+        }
+
+        function getGnnEnabledTools() {
+            const option = document.querySelector('input[name="gnnOption"]:checked')?.value || 'gnn';
+            if (option === 'gnn_wiki') return ['get_wikipedia_context'];
+            if (option === 'gnn_mcp') return ['reverse_geocode', 'get_nearby_places', 'get_nearby_transit', 'get_wikipedia_context'];
+            return [];
+        }
+
+        function getGnnScenarioType() {
+            const option = document.querySelector('input[name="gnnOption"]:checked')?.value || 'gnn';
+            return option === 'gnn_mcp' ? 'gnn_mcp' : 'gnn';
+        }
 
         const GOOGLE_TOOLS = ['reverse_geocode', 'get_area_info', 'get_nearby_places', 'get_distance', 'search_places'];
         const TRANSIT_TOOLS = ['get_nearby_transit'];
@@ -883,7 +1035,7 @@
         function updateToggleUI() {
             const toggleBtn = document.getElementById('webToggleBtn');
             toggleBtn.disabled = false;
-            toggleBtn.textContent = useWebSearch ? 'אינטרנט: ON' : 'אינטרנט: OFF';
+            toggleBtn.textContent = useWebSearch ? '🌐 ON' : '🌐 OFF';
             toggleBtn.classList.toggle('active', useWebSearch);
 
             if (useMcpMode && useWebSearch) {
@@ -896,6 +1048,9 @@
                     .map(cb => ({ google: '🏙️ Google', transit: '🚌 Transit', get_wikipedia_context: '📖 Wikipedia' })[cb.value] || cb.value);
                 document.getElementById('toggleLabel').textContent = `🧰 MCP: ${parts.join(' + ')}`;
                 document.getElementById('stageBadge').textContent = '🧰 שלב ב׳: Geospatial MCP';
+            } else if (useGnnMode) {
+                document.getElementById('toggleLabel').textContent = '🧠 GNN: ניתוח רשת תחבורה (תל אביב-יפו)';
+                document.getElementById('stageBadge').textContent = '🧠 GNN + Claude';
             } else if (useWebSearch) {
                 document.getElementById('toggleLabel').textContent = 'חיפוש אינטרנט: פעיל';
                 document.getElementById('stageBadge').textContent = '🌐 מחובר לאינטרנט';
@@ -954,8 +1109,11 @@
 
         function displayCoordinates() {
             document.getElementById('locationDisplay').style.display = 'block';
-            document.getElementById('coordsText').textContent = 
-                `(${selectedLocation.lat.toFixed(4)}, ${selectedLocation.lon.toFixed(4)})`;
+            const inArea = isInGnnArea(selectedLocation.lat, selectedLocation.lon);
+            document.getElementById('coordsText').textContent =
+                `(${selectedLocation.lat.toFixed(4)}, ${selectedLocation.lon.toFixed(4)})` +
+                (inArea ? ' 🧠' : '');
+            updateGnnButton();
         }
 
         async function askQuestion(question = 'מה יש כאן?') {
@@ -972,14 +1130,18 @@
             const loadingMessage = addMessage('מחשב תשובה...', 'assistant', true);
 
             // MCP calls can take longer (multiple API round-trips + Wikipedia)
-            const timeoutMs = useMcpMode ? 90000 : 20000;
+            const timeoutMs = useGnnMode ? 120000 : useMcpMode ? 90000 : 20000;
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
             try {
-                const enabledTools = useMcpMode ? getEnabledTools() : [];
-                const scenarioType = useMcpMode ? 'mcp'
-                    : (useWebSearch ? 'web_grounded' : 'baseline');
+                const enabledTools = useGnnMode  ? getGnnEnabledTools()
+                    : useMcpMode                 ? getEnabledTools()
+                    : [];
+                const scenarioType = useGnnMode  ? getGnnScenarioType()
+                    : useMcpMode                 ? 'mcp'
+                    : useWebSearch               ? 'web_grounded'
+                    : 'baseline';
 
                 const response = await fetch(`${API_BASE}/api/v1/ask`, {
                     method: 'POST',
@@ -999,9 +1161,11 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    const claudeLogo = `<img src="https://cdn.simpleicons.org/anthropic/6b4fa8" alt="Claude">`;
-                    const badgeParts = [`${claudeLogo} Claude`];
-                    if (data.model_used?.includes('+web_search')) {
+                    const badgeParts = ['Claude'];
+                    if (data.scenario_type === 'gnn' || data.scenario_type === 'gnn_mcp') {
+                        badgeParts.push('🧠 GNN');
+                        if (data.scenario_type === 'gnn_mcp') badgeParts.push('🏙️ Google');
+                    } else if (data.model_used?.includes('+web_search')) {
                         badgeParts.push('🌐 Web');
                     } else if (data.scenario_type === 'web_grounded') {
                         badgeParts.push('🌐 Web ⚠️');
@@ -1012,7 +1176,8 @@
                         if (used.some(t => TRANSIT_TOOLS.includes(t))) badgeParts.push('🚌 Transit');
                         if (used.includes('get_wikipedia_context')) badgeParts.push('📖 Wikipedia');
                     }
-                    const badgeHtml = `<div><span class="msg-badge">${badgeParts.join('<span class="sep"> · </span>')}</span></div>`;
+                    const badgeClass = data.scenario_type === 'gnn' ? 'gnn-badge' : 'msg-badge';
+                    const badgeHtml = `<div><span class="${badgeClass}">${badgeParts.join('<span class="sep"> · </span>')}</span></div>`;
                     addMessage(data.answer, 'assistant', false, badgeHtml);
                 } else {
                     addMessage(`שגיאה: ${response.status}`, 'assistant');
@@ -1162,7 +1327,7 @@
             document.getElementById('examToggleToolsBtn').textContent = allChecked ? 'בטל הכל' : 'בחר הכל';
         }
 
-        async function runExam() {
+async function runExam() {
             const selected = Array.from(document.querySelectorAll('#examPlacesGrid input[type="checkbox"]:checked'))
                 .map(cb => parseInt(cb.value));
             if (selected.length === 0) { alert('בחר לפחות מקום אחד'); return; }
@@ -1180,8 +1345,14 @@
             if (toolTransit) enabledTools.push(...TRANSIT_TOOLS);
             if (toolWiki)    enabledTools.push('get_wikipedia_context');
 
-            const hasMcp = enabledTools.length > 0;
-            const scenarioType = hasMcp ? 'mcp' : (toolWeb ? 'web_grounded' : 'baseline');
+            const examGnnMode = document.querySelector('input[name="examGnnMode"]:checked')?.value || 'none';
+            let scenarioType;
+            if (examGnnMode === 'gnn' || examGnnMode === 'gnn_mcp') {
+                scenarioType = examGnnMode;
+            } else {
+                const hasMcp = enabledTools.length > 0;
+                scenarioType = hasMcp ? 'mcp' : (toolWeb ? 'web_grounded' : 'baseline');
+            }
 
             const progressWrap = document.getElementById('examProgressWrap');
             const progressFill = document.getElementById('examProgressFill');

@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     # Google APIs
     GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY", "")
 
+    # Free LLaMA via Groq (https://console.groq.com — free tier)
+    GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
+    GROQ_MODEL:   str = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
+
     # Evaluation judges
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")

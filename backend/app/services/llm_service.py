@@ -339,4 +339,160 @@ This is a baseline response without specific geospatial data."""
             return self.generate_baseline_answer(question, lat, lon), tools_used
 
 
+    # ── GNN answer via Claude ──────────────────────────────────────────────────
+    def generate_gnn_answer(
+        self,
+        question: str,
+        lat: float,
+        lon: float,
+        gnn_result: dict,
+        wiki_context: str = "",
+    ) -> str:
+        """Format GNN inference output into a Hebrew answer using Claude."""
+        role_he = {
+            'isolated':         'מבודד',
+            'residential':      'שכונתי',
+            'transit_served':   'משורת תח"צ',
+            'local_hub':        'צומת מקומי',
+            'metropolitan_hub': 'צומת מטרופוליני',
+        }
+        conn_he = {'low': 'נמוכה', 'medium': 'בינונית', 'high': 'גבוהה'}
+        pt_he   = {'poor': 'חלשה', 'moderate': 'בינונית', 'rich': 'עשירה'}
+
+        ev = gnn_result['evidence']
+        street_name = gnn_result.get('street_name')
+        location_str = f"רחוב {street_name}, תל אביב-יפו" if street_name else "תל אביב-יפו"
+
+        def _qual(val, thresholds, labels):
+            for t, l in zip(thresholds, labels):
+                if val <= t: return l
+            return labels[-1]
+
+        bus_q   = _qual(ev['bus_stop_count'],        [3, 10, 30],  ['כמעט ללא', 'מועט', 'בינוני', 'עשיר'])
+        lrt_q   = _qual(ev['light_rail_stop_count'], [0, 2],       ['ללא', 'קיים', 'עשיר'])
+        train_q = _qual(ev['train_stop_count'],      [0, 1],       ['ללא', 'קיים', 'מספר תחנות'])
+        inter_q = _qual(ev['major_intersections_count'], [2, 6, 12], ['נמוך', 'בינוני', 'גבוה', 'מאוד גבוה'])
+
+        gnn_block = (
+            f"Location: {location_str}\n"
+            f"Network role: {role_he.get(gnn_result['network_role'], gnn_result['network_role'])}\n"
+            f"Road connectivity: {conn_he.get(gnn_result['connectivity_level'], gnn_result['connectivity_level'])}\n"
+            f"Public transport coverage: {pt_he.get(gnn_result['public_transport_level'], gnn_result['public_transport_level'])}\n"
+            f"Intersection density: {inter_q}\n"
+            f"Bus coverage: {bus_q}\n"
+            f"Light rail: {lrt_q}\n"
+            f"Train: {train_q}"
+        )
+
+        wiki_section = f"\n\nWikipedia context:\n{wiki_context}" if wiki_context else ""
+
+        prompt = (
+            f"You are an expert assistant in transportation and urban planning in Israel. "
+            f"Always answer in Hebrew.\n\n"
+            f"Location analysis:\n{gnn_block}{wiki_section}\n\n"
+            f"Question: {question}\n\n"
+            f"Write a single natural paragraph (3-4 sentences) in Hebrew describing transportation "
+            f"at this location. Start with the location name. "
+            f"Do NOT mention numbers, models, algorithms, or analysis methods — "
+            f"just describe the place naturally as an expert would."
+        )
+
+        _log("request", {"question": question, "lat": lat, "lon": lon, "mode": "gnn_claude"})
+        if self.use_mock:
+            answer = f"[GNN — ניתוח ישיר]\n{gnn_block}"
+            _log("response", {"source": "raw_gnn", "answer": answer})
+            return answer
+
+        try:
+            msg = self.client.messages.create(
+                model=self.model, max_tokens=400,
+                messages=[{"role": "user", "content": prompt}],
+            )
+            answer = msg.content[0].text
+            _log("response", {"source": "claude_gnn", "model": self.model, "answer": answer})
+            return answer
+        except Exception as e:
+            print(f"[GNN] Claude call failed: {e}")
+            _log("error", {"source": "claude_gnn", "error": str(e)})
+
+        answer = f"[GNN — ניתוח ישיר]\n{gnn_block}"
+        _log("response", {"source": "raw_gnn", "answer": answer})
+        return answer
+
+    def generate_gnn_mcp_answer(
+        self,
+        question: str,
+        lat: float,
+        lon: float,
+        gnn_result: dict,
+        geo: dict,
+        places: list,
+        transit: list,
+        wiki_context: str = "",
+    ) -> str:
+        """GNN structural analysis + real Google API data → Claude."""
+        role_he = {
+            'isolated': 'isolated', 'residential': 'residential',
+            'transit_served': 'transit-served', 'local_hub': 'local hub',
+            'metropolitan_hub': 'metropolitan hub',
+        }
+        conn_he = {'low': 'low', 'medium': 'medium', 'high': 'high'}
+        pt_he   = {'poor': 'poor', 'moderate': 'moderate', 'rich': 'rich'}
+
+        street_name = gnn_result.get('street_name')
+        address = (
+            f"{geo.get('street','')}, {geo.get('city','')}".strip(', ') or
+            (f"רחוב {street_name}, תל אביב-יפו" if street_name else f"{lat:.4f}, {lon:.4f}")
+        )
+
+        network_role = role_he.get(gnn_result['network_role'], gnn_result['network_role'])
+        connectivity  = conn_he.get(gnn_result['connectivity_level'], gnn_result['connectivity_level'])
+        pt_level      = pt_he.get(gnn_result['public_transport_level'], gnn_result['public_transport_level'])
+
+        transit_lines = "\n".join(
+            f"  - {t.get('name','')} ({t.get('type','')}, ~{t.get('distance_m','?')}m)"
+            for t in (transit or [])[:8]
+        ) or "  (none found)"
+
+        places_lines = "\n".join(
+            f"  - {p.get('name','')} ({p.get('type','')}, ~{p.get('distance_m','?')}m)"
+            for p in (places or [])[:6]
+        ) or "  (none found)"
+
+        wiki_section = f"\nWikipedia context:\n{wiki_context}" if wiki_context else ""
+
+        prompt = (
+            f"You are an expert assistant in transportation and urban planning in Israel. "
+            f"Always answer in Hebrew.\n\n"
+            f"Location: {address}\n"
+            f"Network character: {network_role}, connectivity {connectivity}, "
+            f"public transport coverage {pt_level}.\n\n"
+            f"Nearby transit stops:\n{transit_lines}\n\n"
+            f"Nearby places:\n{places_lines}"
+            f"{wiki_section}\n\n"
+            f"Question: {question}\n\n"
+            f"Write a single natural paragraph (4-5 sentences) in Hebrew describing transportation "
+            f"at this location. Start with the location name. "
+            f"Do NOT mention numbers, models, algorithms, or analysis methods — "
+            f"just describe the place naturally as an expert would."
+        )
+
+        _log("request", {"question": question, "lat": lat, "lon": lon, "mode": "gnn_mcp"})
+
+        if self.use_mock:
+            return f"[GNN+MCP mock] {address}"
+
+        try:
+            msg = self.client.messages.create(
+                model=self.model, max_tokens=600,
+                messages=[{"role": "user", "content": prompt}],
+            )
+            answer = msg.content[0].text
+            _log("response", {"source": "claude_gnn_mcp", "model": self.model, "answer": answer})
+            return answer
+        except Exception as e:
+            _log("error", {"source": "claude_gnn_mcp", "error": str(e)})
+            return f"[GNN+MCP שגיאה: {e}]"
+
+
 llm_service = LLMService()
